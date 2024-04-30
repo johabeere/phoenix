@@ -1,4 +1,4 @@
-![pheonix logo](/assets/logo_cropped.jpg)
+![pheonix logo](/assets/transparent_logo.png)
 # Welcome to Pheonix! 
 ## Intended usecase and scope  
 
@@ -14,7 +14,11 @@ The main three goals to achieve were set as:
 
 
 ## Installation 
-To-Do: add install instructions here. 
+* This project is meant to run on Raspbian, a light-weight Debian Distribution. 
+**1. Clone this Repo:**
+´´´$ git clone https://github.com/johabeere/phoenix´´´
+**2. Execute the install script with root priviliges:**
+´´´cd ./phoenix & sudo install.sh´´´
 
 ## Usage
 To-Do: add usage instructions here. 
