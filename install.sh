@@ -11,6 +11,6 @@ sudo apt-get install python3 python3-pip python3-venv libcap-dev libcamera-dev l
 #Enter venv and activate packages.
 python -m venv venv
 sourve ./venv/bin/activate
-python -m pip install -r ./software/requirements.txt
+python -m pip install -r ./software/requirements
 deactivate
 echo "Successfully installed the phoenix project! Try it out with "./software/start.sh"

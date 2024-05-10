@@ -25,7 +25,9 @@ def patch():
 class Fire:
     
     active:bool
-    
+    height:float
+    time_to_drop:float
+
     def __init__(self, d:Detector):
         self.center = d.center
         self.corners = d.corners
@@ -33,6 +35,18 @@ class Fire:
     
     def __str__(self):
         return f"fire with image center at: {self.center}" 
+
+    def get_height(): 
+        #* get height estimate from camera area
+        return 0     
+
+
+def arc_calc(f:Fire):
+    if f.height == 0: f.get_height()    # make sure height is set.
+
+    f.current_target = [0, 0]
+    f.time_to_drop = 0
+    return f 
 
 if __name__ == "__main__": 
     print("henlo") ##never called.

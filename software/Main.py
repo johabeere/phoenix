@@ -1,4 +1,4 @@
-import Camera as c, Vision as v, Helper as h
+import Camera as c, Vision as v, Helper as h, Hardware as hw
 from Helper import Fire, pprint as print
 import os, sys
 
