@@ -1,6 +1,7 @@
 from colorama import Fore, Back, Style
 from pyapriltags import Detector
 import yaml, os, sys, inspect
+import numpy as np
 global paramters
 
 def get_params():
@@ -27,6 +28,7 @@ class Fire:
     active:bool
     height:float
     time_to_drop:float
+    current_target:list
 
     def __init__(self, d:Detector):
         self.center = d.center
@@ -43,8 +45,10 @@ class Fire:
 
 def arc_calc(f:Fire):
     if f.height == 0: f.get_height()    # make sure height is set.
-
-    f.current_target = [0, 0]
+    a:float
+    g:float = 9.81
+    v:float = 0
+    f.current_target = [np.sqrt(2*f.height*v^2/g), 0]
     f.time_to_drop = 0
     return f 
 
