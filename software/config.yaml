@@ -10,6 +10,8 @@ Helper:
   logcolor: "CYAN"
 Main:
   logcolor: "CYAN"
+Hardware:
+  camera_uptilt: 30.0
 
 __main__: 
   logcolor: "CYAN"

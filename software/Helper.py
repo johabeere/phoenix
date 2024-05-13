@@ -23,6 +23,24 @@ def pprint(text:str, Color:str = "WHITE", **kwargs):
 def patch():
     return parameters['Camera']['libcameraloglevel']
 
+class Drone
+
+    tilt:float
+    speed:float
+
+    def __init__(self, i1, i2):
+        self.tilt = get_angle(i1)
+        self.speed = get_speed(i1, i2)
+
+    def get_speed(i1, i2):
+        # TODO: write method
+        pass
+
+    def get_angle(i1):
+        # TODO: write method
+        pass
+
+
 class Fire:
     
     active:bool
