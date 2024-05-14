@@ -15,6 +15,7 @@ Main:
   logcolor: "CYAN"
   fire_polling: 1
   afterrun_time: 10
+  coolmode: True
 Hardware:
   logcolor: "CYAN"
   camera_uptilt: 30.0
