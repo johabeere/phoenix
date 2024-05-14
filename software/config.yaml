@@ -3,6 +3,9 @@ Vision:
   tag_size: 0.065
   K: [336.7755634193813, 0.0, 333.3575643300718, 0.0, 336.02729840829176, 212.77376312080065, 0.0, 0.0, 1.0]
   tag_to_search_for: 03 
+  center: [960,   540]
+  centerborders: [0.8, 0.8] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
+  target_threshold: 0.1
 Camera:
   logcolor: "CYAN"
   libcameraloglevel: "3" #not working right now :( #"0" - DEBUG, "1" - INFO, "2" - WARN, "3" - ERROR, "4" - FATAL
@@ -10,8 +13,13 @@ Helper:
   logcolor: "CYAN"
 Main:
   logcolor: "CYAN"
+  fire_polling: 1
+  afterrun_time: 10
 Hardware:
-  camera_uptilt: 30.0
-
-__main__: 
   logcolor: "CYAN"
+  camera_uptilt: 30.0
+  accellwaitpolling: 0.2 #time to poll for accell change during takeoff---
+  pumpinterval: 0 #time to take on water. shortened to stop lengthy runtimes...
+  target_threshold: 0.1
+__main__: 
+  logcolor: "BLUE"

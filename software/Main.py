@@ -1,13 +1,32 @@
 import Camera as c, Vision as v, Helper as h, Hardware as hw
-from Helper import Fire, pprint as print
-import os, sys
+from Helper import Fire, Drone, pprint as print
+import os, sys, time
 
-logcolor = "magenta"
-activator = './venv/bin/activate_this.py'  # Looted from virtualenv; should not require modification, since it's defined relatively
 
 def main(): 
+    f:Fire
+    d:Drone = Drone('notimplemented', 'yet')
     print("Hello World!", "MAGENTA")
-    find_fire()
+    ##Load water
+    hw.acquire_payload()
+    ##in-air loop: 
+    while True: 
+        f = find_fire()
+        if f!=None and v.is_in_center(f): 
+            print("Fire was found and centered.", "MAGENTA")
+            print(f"center at {f.center}")
+            break
+            
+            ##Found Fire, proceeding 
+            ##check if extinguishable
+        else: 
+            time.sleep(h.parameters['Main']['fire_polling'])
+            continue
+            ##no fire found    
+    #extinguish: 
+    extinguish(d, f)
+    hw.done()
+    time.sleep(h.parameters['Main']['afterrun_time'])
     clean_exit()
 
 def find_fire()-> Fire:
@@ -19,7 +38,20 @@ def find_fire()-> Fire:
             if(read_Tags[i][j].tag_id==h.parameters['Vision']['tag_to_search_for']):
                 #print(f"Found a fire with tag ID: {read_Tags[i][j].tag_id} with coordinates: ({read_Tags[i][j].center[0]},{read_Tags[i][j].center[1]})", "GREEN") 
                 arraypos = [i,j]
-    return Fire(read_Tags[arraypos[0]][arraypos[1]])
+                return Fire(read_Tags[arraypos[0]][arraypos[1]])
+    return None
+
+def extinguish(d:Drone, f:Fire) -> None:
+    ##start rapidly polling for drop time detection. 
+    ##we can already assume that a fire is present and in a theoretically droppable path. 
+    while True: 
+        f.arc_calc(d.get_speed('not implemented', 'yet'), d.get_height())
+        if(abs(f.current_target[0]- f.center[0])<h.parameters['Vision']['target_threshold']*1920):
+            hw.drop()
+            break
+        else: 
+            continue
+
 
 def clean_exit(): 
     print("made it to EoP, shutting down gracefully..")
