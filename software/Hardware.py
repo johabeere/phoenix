@@ -4,14 +4,14 @@ from Helper import pprint as print
 
 
 def main(): 
-    print("Henlo", "CYAN")
+    print("Henlo", h.LogLevel.INFO, "CYAN")
 
 
 def hw_init():
-    print("Henlo", "CYAN")
+    print("Henlo",h.LogLevel.INFO,  "CYAN")
 
 def wait_for_takeoff(d:h.Drone):
-    print("Waiting for Takeoff...")
+    print("Waiting for Takeoff...", h.LogLevel.INFO)
     oldacc = d.accelleration()
     while(True):
         acc = d.accelleration()        
@@ -20,15 +20,15 @@ def wait_for_takeoff(d:h.Drone):
 
 def acquire_payload()-> None: 
     ##start pump for a predetermined amount of time. 
-    print("...Starting payload aquisition..", "GREEN")
+    print("...Starting payload aquisition..", h.LogLevel.INFO, "GREEN")
     time.sleep(h.parameters['Hardware']['pumpinterval'])
-    print("..assuming payload aquisition finished...", "GREEN")
+    print("..assuming payload aquisition finished...",h.LogLevel.INFO, "GREEN")
     ##end pump
     pass
 
 def drop(d:h.Drone) -> None:
     if not d.active: 
-        print("Can not drop payload, since a drop has already been deployed.", "RED")
+        print("Can not drop payload, since a drop has already been deployed.", h.LogLevel.FAILURE, "RED")
         return
     #release servo pins
     return

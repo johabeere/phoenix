@@ -39,17 +39,18 @@ def main():
     f:Fire
     d:Drone = Drone('notimplemented', 'yet')
     if h.parameters['Main']['coolmode']:
-        print(greetstring,  "RED")
+        print(greetstring, h.LogLevel.INFO, "RED")
     else: 
-        print("Hello World", "MAGENTA")
+        print("Hello World", h.LogLevel.INFO, "MAGENTA")
+    print(f"Average speed is: {v.get_speed(2)}")
     ##Load water
     hw.acquire_payload()
     ##in-air loop: 
     while True: 
         f = find_fire()
         if f!=None and v.is_in_center(f): 
-            print("Fire was found and centered.", "MAGENTA")
-            print(f"center at {f.center}")
+            print("Fire was found and centered.", h.LogLevel.INFO, "MAGENTA")
+            print(f"center at {f.center}", h.LogLevel.INFO)
             break
             
             ##Found Fire, proceeding 
@@ -89,7 +90,7 @@ def extinguish(d:Drone, f:Fire) -> None:
 
 
 def clean_exit(): 
-    print("made it to EoP, shutting down gracefully..")
+    print("made it to EoP, shutting down gracefully..", h.LogLevel.INFO)
     c.camera_cleanup()
     exit()
 
@@ -97,6 +98,6 @@ if __name__ == "__main__":
     try: 
         main()
     except KeyboardInterrupt: 
-        print("cleaning up and exiting....")
+        print("cleaning up and exiting....", h.LogLevel.INFO)
         c.camera_cleanup()
         exit()

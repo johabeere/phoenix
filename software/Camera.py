@@ -5,6 +5,9 @@ from libcamera import controls #rpi-libcamera package
 import os, fnmatch, time
 
 picam2 = Picamera2()
+frame_rate = h.parameters['Camera']['frame_rate']
+
+picam2.video_configuration.controls.FrameRate = frame_rate
 imagepath = "./captures"
 burst_delay = 0.1
 
@@ -45,7 +48,7 @@ if __name__=="__main__":
         start_camera()
         main()
     except KeyboardInterrupt: 
-        print("goodbye, cleaning up before I leave...")
+        print("goodbye, cleaning up before I leave...", h.LogLevel.INFO)
         exit()
 else: 
     try: 
@@ -53,6 +56,6 @@ else:
         make_img_dir()
         start_camera()
     except KeyboardInterrupt: 
-        print("goodbye, cleaning up before I leave...")
+        print("goodbye, cleaning up before I leave...", h.LogLevel.INFO)
         camera_cleanup() 
         exit()

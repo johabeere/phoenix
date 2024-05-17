@@ -9,6 +9,9 @@ Vision:
 Camera:
   logcolor: "CYAN"
   libcameraloglevel: "3" #not working right now :( #"0" - DEBUG, "1" - INFO, "2" - WARN, "3" - ERROR, "4" - FATAL
+  focal_length_pixels: 1000  # Example value, adjust based on your camera calibration
+  frame_rate: 30.0  # Frame rate of the video in frames per second
+
 Helper: 
   logcolor: "CYAN"
 Main:
@@ -24,3 +27,6 @@ Hardware:
   target_threshold: 0.1
 __main__: 
   logcolor: "BLUE"
+User:
+  debug: True
+  log_level: 0

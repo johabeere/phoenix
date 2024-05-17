@@ -2,23 +2,60 @@ from colorama import Fore, Back, Style
 from pyapriltags import Detector
 import yaml, os, sys, inspect
 import numpy as np
+from enum import Enum, auto
 global paramters
+global debug 
 
+
+
+class LogLevel(Enum): 
+    DEBUG = 0
+    INFO = 1
+    WARNING = 2
+    ERROR = 3
+    FAILURE = 4
+    def __init__(self, _): 
+        color_mapping = {
+            'DEBUG': 'WHITE', 
+            'INFO': 'WHITE', 
+            'WARNING': "YELLOW", 
+            'ERROR': "RED", 
+            'FAILURE': "RED"
+        }
+        self.color = color_mapping[self.name]
+    def __int__(self): 
+        return self.value
+    def __str__(self): 
+        return self.name
+    
 def get_params():
     with open( './config.yaml', 'r') as stream:
         p= yaml.safe_load(stream)
     return p 
 
-def pprint(text:str, Color:str = "WHITE", **kwargs):
+def get_debug(): 
+    global debug
+    debug = parameters['User']['debug']
+
+
+def pprint(text:str, level:LogLevel=LogLevel.INFO, textcolor:str="WHITE",  **kwargs):
+        
     frm = inspect.stack()[1]
     parent = inspect.getmodule(frm[0]).__name__
     try: 
         #Try to get color from parent script 
         c = str(parameters[f'{parent}']['logcolor'])
     except Exception as e:
+        #Log color not found, throwing exception.
         print("COLOR EXCEPTION: invalid log color string." + str(e))
         c = "WHITE"
-    print(eval('Fore.'+ c) + f"{str(parent)}: \t" + eval('Fore.'+Color) + str(text) + Style.RESET_ALL, **kwargs)
+    if(int(level) < parameters['User']['log_level']):
+        ##not printed since prority too low. 
+        return
+    #print(textcolor)
+    #print(eval('Fore.'+str(textcolor)))
+    print(eval('Fore.'+ c) + f"{str(parent)}: \t" + eval('Fore.' + level.color)+ f"{level.name}\t"+ Style.RESET_ALL + eval('Fore.'+textcolor) + str(text) + Style.RESET_ALL, **kwargs)
+    return
 
 def patch():
     return parameters['Camera']['libcameraloglevel']
@@ -77,3 +114,4 @@ if __name__ == "__main__":
 else: 
     global parameters 
     parameters = get_params()
+    get_debug()
