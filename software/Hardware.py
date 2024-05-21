@@ -1,4 +1,5 @@
 import os, time, Helper as h 
+import RPi.GPIO as GPIO
 from Helper import pprint as print
 
 
@@ -37,6 +38,46 @@ def done()-> None:
     #set LED to symbol done.
     pass
 
+def servo1():
+    GPIO.setmode(GPIO.BCM)
+    servo1PIN = 13
+    GPIO.setup(servo1PIN, GPIO.OUT)
+    p1 = GPIO.PWM(servo1PIN, 50)
+    p1.start(7.5)
+    p1.ChangeDutyCycle(7.5)
+    time.sleep(1)
+    p1.ChangeDutyCycle(12.5)
+    time.sleep(1)
+    p1.stop()
+    GPIO.cleanup()
+
+def servo2():
+    GPIO.setmode(GPIO.BCM)
+    servo2PIN = 12
+    GPIO.setup(servo2PIN, GPIO.OUT)
+    p2 = GPIO.PWM(servo2PIN, 50)
+    p2.start(7.5)
+    p2.ChangeDutyCycle(7.5)
+    time.sleep(1)
+    p2.ChangeDutyCycle(12.5)
+    time.sleep(1)
+    p2.stop()
+    GPIO.cleanup()
+
+def watersensor()
+    waterpin = 19
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(waterpin, GPIO.IN)
+    try:
+        while True:
+            sensor_value = GPIO.input(waterpin)
+            if sensor_value == 1:
+                print("Wasser erkannt!")
+            else:
+                print("Kein Wasser erkannt!")
+            time.sleep(1)
+    except KeyboardInterrupt:
+        GPIO.cleanup()
 
 if __name__ == "__main__": 
     hw_init()
