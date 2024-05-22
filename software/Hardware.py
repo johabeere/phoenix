@@ -79,6 +79,15 @@ def watersensor()
     except KeyboardInterrupt:
         GPIO.cleanup()
 
+def get_angle():
+    """
+    Gets uptilt angle from Gyroscope. 
+
+
+    
+    """
+    return None
+
 if __name__ == "__main__": 
     hw_init()
     main() 

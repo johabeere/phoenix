@@ -7,13 +7,16 @@ Vision:
   centerborders: [0.8, 0.8] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
   target_threshold: 0.1
 Camera:
+  calibrated: False
   logcolor: "CYAN"
+  imagepath: "./captures"
   libcameraloglevel: "3" #not working right now :( #"0" - DEBUG, "1" - INFO, "2" - WARN, "3" - ERROR, "4" - FATAL
   focal_length_pixels: 1000  # Example value, adjust based on your camera calibration
   frame_rate: 30.0  # Frame rate of the video in frames per second
 
 Helper: 
   logcolor: "CYAN"
+  test: "Test"
 Main:
   logcolor: "CYAN"
   fire_polling: 1

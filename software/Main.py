@@ -37,7 +37,7 @@ greetstring = "\n\
 
 def main(): 
     f:Fire
-    d:Drone = Drone('notimplemented', 'yet')
+    d:Drone = Drone()
     if h.parameters['Main']['coolmode']:
         print(greetstring, h.LogLevel.INFO, "RED")
     else: 

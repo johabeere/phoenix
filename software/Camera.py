@@ -8,7 +8,6 @@ picam2 = Picamera2()
 frame_rate = h.parameters['Camera']['frame_rate']
 
 picam2.video_configuration.controls.FrameRate = frame_rate
-imagepath = "./captures"
 burst_delay = 0.1
 
 
@@ -29,18 +28,18 @@ def start_camera():
 
 def take_pictures(num_pictures:int): 
     for i in range(num_pictures): 
-        picam2.capture_file(f"{imagepath}/capture{i}.jpg")
+        picam2.capture_file(f"{h.parameters['Camera']['imagepath']}/capture{i}.jpg")
         time.sleep(burst_delay)
 
 def make_img_dir(): 
-    if not os.path.isdir(imagepath): 
-        os.makedirs(imagepath)
+    if not os.path.isdir(h.parameters['Camera']['imagepath']): 
+        os.makedirs(h.parameters['Camera']['imagepath'])
     
 def camera_cleanup():
-    for i in os.listdir(imagepath):
+    for i in os.listdir(h.parameters['Camera']['imagepath']):
         if fnmatch.fnmatch(i, "capture*"): 
-            print(f"i={i}, removing {imagepath+'/'+i}")
-            os.remove(f"{imagepath+'/'+i}")
+            print(f"i={i}, removing {h.parameters['Camera']['imagepath']+'/'+i}")
+            os.remove(f"{h.parameters['Camera']['imagepath']+'/'+i}")
 
 if __name__=="__main__": 
     #empty / debug main function. 
