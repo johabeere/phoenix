@@ -25,6 +25,10 @@ Hardware:
   accellwaitpolling: 0.2 #time to poll for accell change during takeoff---
   pumpinterval: 0 #time to take on water. shortened to stop lengthy runtimes...
   target_threshold: 0.1
+  pushbutton1:
+    gpio: 5,
+    status: out
+    
 __main__: 
   logcolor: "BLUE"
 User:

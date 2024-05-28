@@ -29,7 +29,7 @@ def acquire_payload()-> None:
 
 def drop(d:h.Drone) -> None:
     if not d.active: 
-        print("Can not drop payload, since a drop has already been deployed.", h.LogLevel.FAILURE, "RED")
+        print("Cannot drop payload, since a drop has already been deployed.", h.LogLevel.FAILURE, "RED")
         return
     #release servo pins
     return
@@ -64,7 +64,7 @@ def servo2():
     p2.stop()
     GPIO.cleanup()
 
-def watersensor()
+def watersensor():
     waterpin = 19
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(waterpin, GPIO.IN)
@@ -78,6 +78,52 @@ def watersensor()
             time.sleep(1)
     except KeyboardInterrupt:
         GPIO.cleanup()
+
+def pushbutton1():
+    GPIO.setmode(GPIO.BCM)
+    pushbutton1 = 5
+    GPIO.setup(pushbutton1, GPIO.IN)
+    GPIO.cleanup()
+
+def pushbutton2():
+    GPIO.setmode(GPIO.BCM)
+    pushbutton2 = 6
+    GPIO.setup(pushbutton2, GPIO.IN)
+    GPIO.cleanup()
+
+def LEDR():
+    GPIO.setmode(GPIO.BCM)
+    ledr = 25
+    GPIO.setup(ledr, GPIO.OUT)
+    GPIO.output(ledr, True)
+    GPIO.cleanup()
+
+def LEDG():
+    GPIO.setmode(GPIO.BCM)
+    ledg = 24
+    GPIO.setup(ledg, GPIO.OUT)
+    GPIO.output(ledg, True)
+    GPIO.cleanup()
+
+def LEDB():
+    GPIO.setmode(GPIO.BCM)
+    ledb = 23
+    GPIO.setup(ledb, GPIO.OUT)
+    GPIO.output(ledb, True)
+    GPIO.cleanup()
+
+def SDA():
+    GPIO.setmode(GPIO.BCM)
+    sda = 2
+    GPIO.setup(sda, GPIO.OUT)
+    GPIO.cleanup()
+
+def SCL():
+    GPIO.setmode(GPIO.BCM)
+    scl = 3
+    GPIO.setup(scl, GPIO.OUT)
+    GPIO.cleanup()
+
 
 if __name__ == "__main__": 
     hw_init()
