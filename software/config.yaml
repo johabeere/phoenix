@@ -13,7 +13,7 @@ Camera:
   libcameraloglevel: "3" #not working right now :( #"0" - DEBUG, "1" - INFO, "2" - WARN, "3" - ERROR, "4" - FATAL
   focal_length_pixels: 1000  # Example value, adjust based on your camera calibration
   frame_rate: 30.0  # Frame rate of the video in frames per second
-
+  physical: [4.74, 714.2341, 1920, 1080] #Array to define the cameras physical attributes. Preset for the Raspberry Pi Camera Module v3. Order is: [Focal length in mm, pixels/mm for imgsize, image size x, image size y]
 Helper: 
   logcolor: "CYAN"
   test: "Test"

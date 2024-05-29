@@ -64,7 +64,7 @@ def servo2():
     p2.stop()
     GPIO.cleanup()
 
-def watersensor()
+def watersensor():
     waterpin = 19
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(waterpin, GPIO.IN)

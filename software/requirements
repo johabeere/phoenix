@@ -11,5 +11,7 @@ python-prctl==1.8.1
 PyYAML==6.0.1
 rpi-kms==0.1a1
 rpi-libcamera==0.1a3
+RPi.GPIO==0.7.1
+scipy==1.13.0
 simplejpeg==1.7.2
 v4l2-python3==0.3.4

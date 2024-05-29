@@ -1,6 +1,6 @@
 from colorama import Fore, Back, Style
 from pyapriltags import Detector
-import yaml, os, sys, inspect
+import yaml, os, sys, inspect, time
 import numpy as np
 from enum import Enum, auto
 
@@ -89,6 +89,8 @@ def overwrite_yaml_attribute(attribute, new_value):
     except Exception as e:
         print(f"Error updating attribute '{attribute}': {e}")
 
+def true_if_wait2s(oldtime): 
+    return True if time.time()-oldtime>=2 else False
 
 
 def shoelace_formula(vertices:list)->float:
@@ -138,7 +140,7 @@ class Drone:
     def height(self)-> float:
         return self._height
     @height.setter
-    def height(self, height:float): 
+    def height(self, h:float): 
         if not 0<h<10:
             raise ValueError("Height can not be outside 0 to 10 meters.")
         self._height=height

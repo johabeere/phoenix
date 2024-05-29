@@ -123,9 +123,11 @@ def calibrate():
     if not os.path.isfile(f"{parameters['Camera']['imagepath']}/calibration0.jpg"): 
         #Take Calibration Images: 
         for i in range(9): 
-            if input(f"Press any key to take calibration picture No. {i+1}:....")!=None: 
-                print("click", h.LogLevel.DEBUG)
-                c.picam2.capture_file(f"{str(parameters['Camera']['imagepath'])}/calibration{i}.jpg")
+            oldtime = time.time()
+            while input(f"Press any key to take calibration picture No. {i+1}:.... [will automatically take picture in 2 seconds...]")==None and not h.true_if_wait2s(oldtime):
+                pass 
+            print("click", h.LogLevel.DEBUG)
+            c.picam2.capture_file(f"{str(parameters['Camera']['imagepath'])}/calibration{i}.jpg")
  
     # Defining the dimensions of checkerboard
     CHECKERBOARD = (6, 9)
@@ -173,7 +175,7 @@ def calibrate():
  
     #cv2.destroyAllWindows() #TODO check if this is necessary for non-display use.
  
-    h,w = img.shape[:2]
+    h2,w = img.shape[:2]
  
     """
     Performing camera calibration by 
@@ -192,7 +194,7 @@ def calibrate():
     print("tvecs : \n")
     print(tvecs)
 
-def get_height(f:h.Fíre, angle:float)-> float: 
+def get_height(f:h.Fire, angle:float)-> float: 
     """
     get height via computervision and trigonometry.
     Arguments: 
