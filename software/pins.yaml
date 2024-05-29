@@ -1,0 +1,10 @@
+Servo1: 13
+Servo2: 12
+Flow_rate_sensor: 19
+Pushbutton1: 5
+Pushbutton2: 6
+LED_R: 25
+LED_G: 24
+LED_B: 23
+SDA: 2
+SCL: 3

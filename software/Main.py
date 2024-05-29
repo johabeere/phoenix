@@ -43,6 +43,7 @@ def main():
     else: 
         print("Hello World", h.LogLevel.INFO, "MAGENTA")
     print(f"Average speed is: {v.get_speed(2)}")
+    hw.servo1()
     ##Load water
     hw.acquire_payload()
     ##in-air loop: 

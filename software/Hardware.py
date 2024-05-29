@@ -39,18 +39,16 @@ def done()-> None:
     #set LED to symbol done.
     pass
 
-def servo1():
+def servo1(dutycycle:float):
     GPIO.setmode(GPIO.BCM)
-    servo1PIN = 13
+    servo1PIN = h.pins['Servo1']
+    print(servo1PIN, h.LogLevel.DEBUG, "CYAN")
     GPIO.setup(servo1PIN, GPIO.OUT)
     p1 = GPIO.PWM(servo1PIN, 50)
-    p1.start(7.5)
-    p1.ChangeDutyCycle(7.5)
-    time.sleep(1)
-    p1.ChangeDutyCycle(12.5)
-    time.sleep(1)
+    p1.start(dutycycle)
     p1.stop()
     GPIO.cleanup()
+    return
 
 def servo2():
     GPIO.setmode(GPIO.BCM)
@@ -79,6 +77,59 @@ def watersensor():
             time.sleep(1)
     except KeyboardInterrupt:
         GPIO.cleanup()
+def pushbutton1():
+    GPIO.setmode(GPIO.BCM)
+    pushbutton1 = 5
+    GPIO.setup(pushbutton1, GPIO.IN)
+    GPIO.cleanup()
+
+def pushbutton2():
+    GPIO.setmode(GPIO.BCM)
+    pushbutton2 = 6
+    GPIO.setup(pushbutton2, GPIO.IN)
+    GPIO.cleanup()
+
+def LEDR():
+    GPIO.setmode(GPIO.BCM)
+    ledr = 25
+    GPIO.setup(ledr, GPIO.OUT)
+    GPIO.output(ledr, True)
+    GPIO.cleanup()
+
+def LEDG():
+    GPIO.setmode(GPIO.BCM)
+    ledg = 24
+    GPIO.setup(ledg, GPIO.OUT)
+    GPIO.output(ledg, True)
+    GPIO.cleanup()
+
+def LEDB():
+    GPIO.setmode(GPIO.BCM)
+    ledb = 23
+    GPIO.setup(ledb, GPIO.OUT)
+    GPIO.output(ledb, True)
+    GPIO.cleanup()
+
+def SDA():
+    GPIO.setmode(GPIO.BCM)
+    sda = 2
+    GPIO.setup(sda, GPIO.OUT)
+    GPIO.cleanup()
+
+def SCL():
+    GPIO.setmode(GPIO.BCM)
+    scl = 3
+    GPIO.setup(scl, GPIO.OUT)
+    GPIO.cleanup()
+
+def get_angle():
+    """
+    Gets uptilt angle from Gyroscope. 
+
+
+    
+    """
+    return None
 
 # Implementierung des Gyroskops
     # GET I2C bus
