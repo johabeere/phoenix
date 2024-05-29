@@ -1,6 +1,6 @@
 import os, time, Helper as h 
 import RPi.GPIO as GPIO
-import smbus, MPU6000 as MPU
+import smbus
 from Helper import pprint as print
 
 
