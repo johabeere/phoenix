@@ -29,7 +29,7 @@ def acquire_payload()-> None:
 
 def drop(d:h.Drone) -> None:
     if not d.active: 
-        print("Cannot drop payload, since a drop has already been deployed.", h.LogLevel.FAILURE, "RED")
+        print("Can not drop payload, since a drop has already been deployed.", h.LogLevel.FAILURE, "RED")
         return
     #release servo pins
     return
@@ -38,18 +38,16 @@ def done()-> None:
     #set LED to symbol done.
     pass
 
-def servo1():
+def servo1(dutycycle:float):
     GPIO.setmode(GPIO.BCM)
-    servo1PIN = 13
+    servo1PIN = h.pins['Servo1']
+    print(servo1PIN, h.LogLevel.DEBUG, "CYAN")
     GPIO.setup(servo1PIN, GPIO.OUT)
     p1 = GPIO.PWM(servo1PIN, 50)
-    p1.start(7.5)
-    p1.ChangeDutyCycle(7.5)
-    time.sleep(1)
-    p1.ChangeDutyCycle(12.5)
-    time.sleep(1)
+    p1.start(dutycycle)
     p1.stop()
     GPIO.cleanup()
+    return
 
 def servo2():
     GPIO.setmode(GPIO.BCM)
@@ -78,7 +76,6 @@ def watersensor():
             time.sleep(1)
     except KeyboardInterrupt:
         GPIO.cleanup()
-
 def pushbutton1():
     GPIO.setmode(GPIO.BCM)
     pushbutton1 = 5
@@ -124,6 +121,14 @@ def SCL():
     GPIO.setup(scl, GPIO.OUT)
     GPIO.cleanup()
 
+def get_angle():
+    """
+    Gets uptilt angle from Gyroscope. 
+
+
+    
+    """
+    return None
 
 if __name__ == "__main__": 
     hw_init()

@@ -5,7 +5,6 @@ import numpy as np
 from enum import Enum, auto
 
 global pins
-global paramters
 global debug 
 
 
@@ -121,6 +120,5 @@ if __name__ == "__main__":
 else: 
     global parameters 
     parameters = get_params()
-    global pins 
     pins = get_pins()
     get_debug()
