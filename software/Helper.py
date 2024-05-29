@@ -3,6 +3,8 @@ from pyapriltags import Detector
 import yaml, os, sys, inspect
 import numpy as np
 from enum import Enum, auto
+
+global pins
 global paramters
 global debug 
 
@@ -32,6 +34,11 @@ def get_params():
     with open( './config.yaml', 'r') as stream:
         p= yaml.safe_load(stream)
     return p 
+
+def get_pins():
+    with open( './pins.yaml', 'r') as stream:
+        p= yaml.safe_load(stream)
+    return p
 
 def get_debug(): 
     global debug
@@ -114,4 +121,6 @@ if __name__ == "__main__":
 else: 
     global parameters 
     parameters = get_params()
+    global pins 
+    pins = get_pins()
     get_debug()
