@@ -1,13 +1,11 @@
 from colorama import Fore, Back, Style
 from pyapriltags import Detector
-import yaml, os, sys, inspect
+import yaml, os, sys, inspect, time
 import numpy as np
 from enum import Enum, auto
 
 global pins
 global debug 
-
-
 
 class LogLevel(Enum): 
     DEBUG = 0
@@ -66,30 +64,92 @@ def pprint(text:str, level:LogLevel=LogLevel.INFO, textcolor:str="WHITE",  **kwa
 def patch():
     return parameters['Camera']['libcameraloglevel']
 
+def overwrite_yaml_attribute(attribute, new_value):
+    """
+    Overwrites an existing attribute in a YAML file.
+
+    :param attribute: The attribute to overwrite.
+    :param new_value: The new value to set for the attribute.
+    """
+    try:
+        # Read the existing YAML file
+        with open('./config.yaml', 'r') as file:
+            data = yaml.safe_load(file)
+
+        # Split the attribute to handle nested attributes
+        keys = attribute.split('.')
+        d = data
+        for key in keys[:-1]:
+            d = d[key]
+
+        # Overwrite the attribute
+        d[keys[-1]] = new_value
+
+        # Write the updated data back to the YAML file
+        with open('./config.yaml', 'w') as file:
+            yaml.safe_dump(data, file)
+
+        print(f"Attribute '{attribute}' updated successfully.")
+
+    except Exception as e:
+        print(f"Error updating attribute '{attribute}': {e}")
+
+def true_if_wait2s(oldtime): 
+    return True if time.time()-oldtime>=2 else False
+
+
+def shoelace_formula(vertices:list)->float:
+    n = len(vertices)
+    area:float = 0.0
+    for i in range(n):
+        j = (i + 1) % n
+        area += vertices[i][0] * vertices[j][1]
+        area -= vertices[j][0] * vertices[i][1]
+    area = abs(area) / 2.0
+    return area
+
+
+
 class Drone:
 
-    tilt:float
-    speed:float
-    height:float
-    active:bool
+    _angle:float
+    _speed:float
+    _height:float
+    _active:bool
     
-    def __init__(self, i1:str, i2:str):
-        self.tilt = self.get_angle(i1)
-        self.speed = self.get_speed(i1, i2)
-        self.height = self.get_height()
-        self.active = True
-    def get_speed(self, i1, i2):
-        # TODO: write method
-        return 0.0
-
-    def get_angle(self, i1)->float:
-        # TODO: write method
-        #return parameters['Helper']
-        return 0.0
-
-    def get_height(self)-> float:
-        #Todo: add openCV height detection.
-        return 0.0
+    def __init__(self, speed=0.0, angle=0.0, height=0.0):
+        
+        self._speed = speed
+        self._height = height
+        self._active = True
+        self._angle = angle
+    
+    @property
+    def speed(self)->float:
+        return self.speed
+    
+    @speed.setter
+    def speed(self, v:float)->None: 
+        if not 0<v<100: #Plausibility check.
+            raise ValueError("Drone speed can not be greater than 100 or smaller than 0.")    
+        self._speed = v
+    @property
+    def angle(self)->float:
+        return self._angle
+    
+    @angle.setter
+    def angle(self, a:float)->None:
+        self._angle = a
+    
+    @property 
+    def height(self)-> float:
+        return self._height
+    @height.setter
+    def height(self, h:float): 
+        if not 0<h<10:
+            raise ValueError("Height can not be outside 0 to 10 meters.")
+        self._height=height
+    
 
 class Fire:
     center:list
@@ -100,9 +160,11 @@ class Fire:
     current_target:list
 
     def __init__(self, d:Detector):
-        self.center = d.center
-        self.corners = d.corners
-        self.current_target = [0, 0]
+        ##Transform to new coordinate system: Origin in middle of Frame. 
+        self.center = [d.center[0]-960, d.center[1]-540, 0] 
+        for i in enumerate(d.corners): 
+            self.corners[i]=[d.corners[i][0]-960, d.corners[i][1]-540, 0]
+        self.current_target = [0, 0, 0]
         active = True
     
     def __str__(self):
@@ -117,6 +179,7 @@ class Fire:
 
 if __name__ == "__main__": 
     print("henlo") ##never called.
+    overwrite_yaml_attribute('Helper.Test', "Boo")
 else: 
     global parameters 
     parameters = get_params()

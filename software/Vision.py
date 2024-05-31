@@ -1,7 +1,8 @@
 import Helper as h, Camera as c
-from Helper import pprint as print, Fire
+from Helper import pprint as print, Fire, parameters
 from pyapriltags import Detector
-import os, numpy as np, yaml,cv2, time
+import os, numpy as np, yaml,cv2, time, glob
+from scipy.spatial.transform import Rotation as R
 
 at_detector = Detector(searchpath=['apriltags'],families='tag36h11',nthreads=1, quad_decimate=1.0, quad_sigma=0.0, refine_edges=1, decode_sharpening=0.25, debug=0)
 
@@ -9,9 +10,9 @@ def look_for_tag(dirpath:str, imgs:list)-> list:
     res=[]
     for i in (j for j in os.listdir(dirpath) if j in imgs):
         img = cv2.imread(dirpath+'/'+i, cv2.IMREAD_GRAYSCALE)
-        cameraMatrix = np.array(h.parameters['Vision']['K']).reshape((3,3))
+        cameraMatrix = np.array(parameters['Vision']['K']).reshape((3,3))
         camera_params = ( cameraMatrix[0,0], cameraMatrix[1,1], cameraMatrix[0,2], cameraMatrix[1,2] )
-        tags = at_detector.detect(img, True, camera_params, h.parameters['Vision']['tag_size'])
+        tags = at_detector.detect(img, True, camera_params, parameters['Vision']['tag_size'])
         res.append(tags)
     print(f"Found tags with IDs: {[i.tag_id for i in tags]}", h.LogLevel.INFO, "GREEN") if len(res) else print("No tags found",h.LogLevel.ERROR, "RED")
     return res 
@@ -35,6 +36,12 @@ feature_params = dict(maxCorners=100,
 
 
 def get_SOMETHING():
+    """
+    Not finished yet, please ignore.     
+    
+    """
+    
+    
     # Take the first frame and find corners in it
     ret, old_frame = c.picam2.capture_array()
     old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
@@ -46,15 +53,17 @@ def get_SOMETHING():
     frame_rate = 30  # Frame rate of the video in frames per second
 
 def get_speed(n:int=1) -> float:
-    """Get speed from Camera.
+    """
+    Get speed from Camera.
     
     Returns speed as gathered from OpenCV image pixel shift.
     
     Args:
-        :param n :Number of times to iterate, returns average speed 
-    
+        :param n: Number of times to iterate, returns average speed. defaults to 1. 
+        :type n: int or convertible. 
     Returns: 
-        float: The speed in pixels/s
+        :return: The speed in pixels/s
+        :rtype: float
     """
     frame_rate = 30
     res:list=[]
@@ -94,8 +103,6 @@ def get_speed(n:int=1) -> float:
         res.append(speed)
         print(f"Pass {n}", h.LogLevel.DEBUG)
         print("Estimated speed: {:.2f} pixels/second".format(speed), h.LogLevel.DEBUG) 
-        print("teststring")
-        print("Teststring", h.LogLevel.ERROR)
         old_gray = frame_gray.copy()
         p0 = good_new.reshape(-1, 1, 2)
         i+=1
@@ -103,6 +110,112 @@ def get_speed(n:int=1) -> float:
     print(f"Got speeds: {res}",h.LogLevel.INFO,"YELLOW")
     return sum(i for i in res)/n
 
+def calibrate():
+    """
+    Calibrates the attached Camera using the OpenCV2 Camera calibration. 
+    
+    Args: 
+        None.
+    Returns: 
+        :returns: None. 
+    
+    """
+    if not os.path.isfile(f"{parameters['Camera']['imagepath']}/calibration0.jpg"): 
+        #Take Calibration Images: 
+        for i in range(9): 
+            oldtime = time.time()
+            while input(f"Press any key to take calibration picture No. {i+1}:.... [will automatically take picture in 2 seconds...]")==None and not h.true_if_wait2s(oldtime):
+                pass 
+            print("click", h.LogLevel.DEBUG)
+            c.picam2.capture_file(f"{str(parameters['Camera']['imagepath'])}/calibration{i}.jpg")
+ 
+    # Defining the dimensions of checkerboard
+    CHECKERBOARD = (6, 9)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+ 
+    # Creating vector to store vectors of 3D points for each checkerboard image
+    objpoints = []
+    # Creating vector to store vectors of 2D points for each checkerboard image
+    imgpoints = [] 
+ 
+ 
+    # Defining the world coordinates for 3D points
+    objp = np.zeros((1, CHECKERBOARD[0] * CHECKERBOARD[1], 3), np.float32)
+    objp[0,:,:2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
+    prev_img_shape = None
+ 
+    # Extracting path of individual image stored in a given directory
+    images = glob.glob(f"{parameters['Camera']['imagepath']}/calibration*.jpg")
+    for fname in images:
+        img = cv2.imread(fname)
+        gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+        # Find the chess board corners
+        # If desired number of corners are found in the image then ret = true
+        ret, corners = cv2.findChessboardCorners(gray, CHECKERBOARD, cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_FAST_CHECK + cv2.CALIB_CB_NORMALIZE_IMAGE +cv2.CALIB_USE_INTRINSIC_GUESS)
+     
+        """
+        If desired number of corner are detected,
+        we refine the pixel coordinates and display 
+        them on the images of checker board
+        """
+        if ret == True:
+            print("Found Checkerboard Corners and appending to img.")
+            objpoints.append(objp)
+            # refining pixel coordinates for given 2d points.
+            corners2 = cv2.cornerSubPix(gray, corners, (11,11),(-1,-1), criteria)
+         
+            imgpoints.append(corners2)
+ 
+            # Draw and display the corners
+            img = cv2.drawChessboardCorners(img, CHECKERBOARD, corners2, ret)
+     
+        #cv2.imwrite(f"{parameters['Camera']['imagepath']}/SHOW_{fname}",gray)
+        cv2.imwrite(f"./captures/SHOW_{time.time()}.jpg", gray)
+        cv2.waitKey(0)
+ 
+    #cv2.destroyAllWindows() #TODO check if this is necessary for non-display use.
+ 
+    h2,w = img.shape[:2]
+ 
+    """
+    Performing camera calibration by 
+    passing the value of known 3D points (objpoints)
+    and corresponding pixel coordinates of the 
+    detected corners (imgpoints)
+    """
+    ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
+ 
+    print("Camera matrix : \n")
+    print(mtx)
+    print("dist : \n")
+    print(dist)
+    print("rvecs : \n")
+    print(rvecs)
+    print("tvecs : \n")
+    print(tvecs)
+
+def get_height(f:h.Fire, angle:float)-> float: 
+    """
+    get height via computervision and trigonometry.
+    Arguments: 
+        :parameter: f is the Fire which we want to estimate the height from. 
+        :parameter: angle is the angle obove the horizon which the camera currently faces. (gyro-angle-uptilt).
+    Returns: 
+        :returns: float height above ground in m. 
+    """
+    if not -45<angle<45: 
+        print(f"Angle for height calculation is out of bounds, please check input: {angle=}", h.LogLevel.ERROR)
+        return 0.0
+    ###Idea: get apriltag size. relate image size to physical april tag size. by that, we can estimate 
+    c = np.array(f.corners)    
+    #Transform coordinates to be orthagonal to camera viewcone: 
+    r = R.from_euler('y', angle, degrees=True)
+    c_transformed = np.dot(c, r) # Transform into new CS
+    ##calculate tag area by using shoelace formula in transformed coordinates: 
+    A = h.shoelace_formula(f.corners)
+    r
+
+    return 0.0
 
 #* end of OpenCV Code, leave this allone for now..
 
@@ -112,11 +225,16 @@ def is_in_center(f:Fire)->bool:
     return True if abs(imgcenter[0]-f.center[0])<variance[0]*1920 and abs(imgcenter[1]-f.center[1])<variance[1]*1080 else False
 
 def setup():
-    print("nothing to set up yet.", h.LogLevel.DEBUG)    
+    if h.parameters['Camera']['calibrated']:
+        print("Starting Camera Calibration...", h.LogLevel.INFO)
+        c.calibrate()
+    else: 
+        print("nothing to set up.", h.LogLevel.DEBUG)
+
 
 def main():
     print("I am your eyes.", h.LogLevel.DEBUG)
-
+    calibrate() #test calibration function.
 
 if __name__=="__main__": 
     #empty / debug main function. 
