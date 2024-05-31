@@ -1,5 +1,6 @@
 import os, time, Helper as h 
 import RPi.GPIO as GPIO
+import smbus
 from Helper import pprint as print
 
 
@@ -49,21 +50,17 @@ def servo1(dutycycle:float):
     GPIO.cleanup()
     return
 
-def servo2():
+def servo2(dutycycle:float):
     GPIO.setmode(GPIO.BCM)
-    servo2PIN = 12
+    servo2PIN = h.pins['Servo2']
     GPIO.setup(servo2PIN, GPIO.OUT)
     p2 = GPIO.PWM(servo2PIN, 50)
-    p2.start(7.5)
-    p2.ChangeDutyCycle(7.5)
-    time.sleep(1)
-    p2.ChangeDutyCycle(12.5)
-    time.sleep(1)
+    p2.start(dutycycle)
     p2.stop()
     GPIO.cleanup()
 
 def watersensor():
-    waterpin = 19
+    waterpin = h.pins['watersensor']
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(waterpin, GPIO.IN)
     try:
@@ -78,46 +75,46 @@ def watersensor():
         GPIO.cleanup()
 def pushbutton1():
     GPIO.setmode(GPIO.BCM)
-    pushbutton1 = 5
+    pushbutton1 = h.pins['pushbutton1']
     GPIO.setup(pushbutton1, GPIO.IN)
     GPIO.cleanup()
 
 def pushbutton2():
     GPIO.setmode(GPIO.BCM)
-    pushbutton2 = 6
+    pushbutton2 = h.pins['pushbutton2']
     GPIO.setup(pushbutton2, GPIO.IN)
     GPIO.cleanup()
 
 def LEDR():
     GPIO.setmode(GPIO.BCM)
-    ledr = 25
+    ledr = h.pins['ledr']
     GPIO.setup(ledr, GPIO.OUT)
     GPIO.output(ledr, True)
     GPIO.cleanup()
 
 def LEDG():
     GPIO.setmode(GPIO.BCM)
-    ledg = 24
+    ledg = h.pins['ledg']
     GPIO.setup(ledg, GPIO.OUT)
     GPIO.output(ledg, True)
     GPIO.cleanup()
 
 def LEDB():
     GPIO.setmode(GPIO.BCM)
-    ledb = 23
+    ledb = h.pins['ledb']
     GPIO.setup(ledb, GPIO.OUT)
     GPIO.output(ledb, True)
     GPIO.cleanup()
 
 def SDA():
     GPIO.setmode(GPIO.BCM)
-    sda = 2
+    sda = h.pins['sda']
     GPIO.setup(sda, GPIO.OUT)
     GPIO.cleanup()
 
 def SCL():
     GPIO.setmode(GPIO.BCM)
-    scl = 3
+    scl = h.pins['scl']
     GPIO.setup(scl, GPIO.OUT)
     GPIO.cleanup()
 

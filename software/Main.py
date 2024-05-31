@@ -1,5 +1,5 @@
 import Camera as c, Vision as v, Helper as h, Hardware as hw
-from Helper import Fire, Drone, pprint as print
+from Helper import Fire, Drone, MPU6000 as MPU, pprint as print
 import os, sys, time
 
 greetstring = "\n\
