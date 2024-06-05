@@ -1,6 +1,7 @@
 import Camera as c, Vision as v, Helper as h, Hardware as hw
-from Helper import Fire, Drone, MPU6000 as MPU, pprint as print
-import os, sys, time
+from Helper import Fire, Drone, pprint as print
+from MPU6000 import MPU6000 as MPU
+import os, sys, time, threading
 
 greetstring = "\n\
                      ++++++=-------                     \n\
@@ -42,6 +43,7 @@ def main():
         print(greetstring, h.LogLevel.INFO, "RED")
     else: 
         print("Hello World", h.LogLevel.INFO, "MAGENTA")
+    polling() # function that calls itself repeatedly until stopped.  
     print(f"Average speed is: {v.get_speed(2)}")
     hw.servo1()
     ##Load water
@@ -65,6 +67,19 @@ def main():
     hw.done()
     time.sleep(h.parameters['Main']['afterrun_time'])
     clean_exit()
+
+def polling(d:Drone, f:Fire)-> None: 
+    d.speed = v.get_speed(3) ##set Drone speed. 
+    d.angle = hw.get_angle() ##set Drone angle. 
+
+    if f is not None:
+        ## Fire found.  
+        f = find_fire() ##update Apriltag position, regenerate fire object.  
+        d.height = v.get_height()##set Drone height. (requires visible Apriltag.) 
+    
+    threading.Timer(h.parameters['Main']['polling_timer'], polling()).start()
+
+
 
 def find_fire()-> Fire:
     arraypos=[-1, -1]
