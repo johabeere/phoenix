@@ -26,12 +26,11 @@ Hardware:
   logcolor: "CYAN"
   camera_uptilt: 30.0
   accellwaitpolling: 0.2 #time to poll for accell change during takeoff---
+  zaccell: 0.2
   pumpinterval: 0 #time to take on water. shortened to stop lengthy runtimes...
   target_threshold: 0.1
-  pushbutton1:
-    gpio: 5,
-    status: out
-    
+  drop_servo: 1 #servo output which releases the payload. 
+  drop_position: 1 #servo position which drops the payload. Range: 0.0 to 1.drop_position: 1 #servo position which drops the payload. Range: 0.0 to 1.00 
 __main__: 
   logcolor: "BLUE"
 User:

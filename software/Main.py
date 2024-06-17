@@ -1,6 +1,5 @@
 import Camera as c, Vision as v, Helper as h, Hardware as hw
 from Helper import Fire, Drone, pprint as print
-from MPU6000 import MPU6000 as MPU
 import os, sys, time, threading
 
 greetstring = "\n\
@@ -37,15 +36,16 @@ greetstring = "\n\
 "
 
 def main(): 
+    #Object initialization
     f:Fire
     d:Drone = Drone()
+    #greet user. 
     if h.parameters['Main']['coolmode']:
         print(greetstring, h.LogLevel.INFO, "RED")
     else: 
         print("Hello World", h.LogLevel.INFO, "MAGENTA")
-    polling() # function that calls itself repeatedly until stopped.  
-    print(f"Average speed is: {v.get_speed(2)}")
-    hw.servo1()
+    
+    polling(d, f) # function that calls itself repeatedly until stopped.  
     ##Load water
     hw.acquire_payload()
     ##in-air loop: 
@@ -63,6 +63,7 @@ def main():
             continue
             ##no fire found    
     #extinguish: 
+    polling(d,f)#make sure we have the most recent polling data.
     extinguish(d, f)
     hw.done()
     time.sleep(h.parameters['Main']['afterrun_time'])
@@ -71,7 +72,9 @@ def main():
 def polling(d:Drone, f:Fire)-> None: 
     d.speed = v.get_speed(3) ##set Drone speed. 
     d.angle = hw.get_angle() ##set Drone angle. 
-
+    d.buttons = hw.get_buttons()
+    
+    print(f"Average speed is: {v.get_speed(2)}")
     if f is not None:
         ## Fire found.  
         f = find_fire() ##update Apriltag position, regenerate fire object.  
@@ -82,6 +85,11 @@ def polling(d:Drone, f:Fire)-> None:
 
 
 def find_fire()-> Fire:
+    """
+    Tries to find a corresponding apriltag in the image and produce a Fire Object. 
+    If unsuccessfull, returns None, else a populated Fire Object. 
+    """
+    
     arraypos=[-1, -1]
     c.take_pictures(2)
     read_Tags= v.look_for_tag("./captures", ["capture0.jpg", "capture1.jpg", "test_img.jpg"])
@@ -96,8 +104,11 @@ def find_fire()-> Fire:
 def extinguish(d:Drone, f:Fire) -> None:
     ##start rapidly polling for drop time detection. 
     ##we can already assume that a fire is present and in a theoretically droppable path. 
-    while True: 
-        f.arc_calc(d.get_speed('not implemented', 'yet'), d.get_height())
+    max_cycles = 100 #prevents endless loop
+    while max_cycles>0: 
+        max_cycles-=1
+        print(f"{max_cycles=}")
+        f.arc_calc(d.speed, d.height)
         if(abs(f.current_target[0]- f.center[0])<h.parameters['Vision']['target_threshold']*1920):
             hw.drop()
             break
@@ -108,6 +119,7 @@ def extinguish(d:Drone, f:Fire) -> None:
 def clean_exit(): 
     print("made it to EoP, shutting down gracefully..", h.LogLevel.INFO)
     c.camera_cleanup()
+    hw.hw_cleanup()
     exit()
 
 if __name__ == "__main__":
@@ -116,4 +128,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt: 
         print("cleaning up and exiting....", h.LogLevel.INFO)
         c.camera_cleanup()
-        exit()
+        hw.hw_cleanup()
+        exit()  

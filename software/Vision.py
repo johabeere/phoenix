@@ -29,29 +29,6 @@ feature_params = dict(maxCorners=100,
                       minDistance=7,
                       blockSize=7)
 
-#ret, old_frame = cap.read()
-#old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
-#p0 = cv2.goodFeaturesToTrack(old_gray, mask=None, **feature_params)
-
-
-
-def get_SOMETHING():
-    """
-    Not finished yet, please ignore.     
-    
-    """
-    
-    
-    # Take the first frame and find corners in it
-    ret, old_frame = c.picam2.capture_array()
-    old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
-    p0 = cv2.goodFeaturesToTrack(old_gray, mask=None, **feature_params)
-
-    # Known parameters
-    focal_length_pixels =1000  # Example value, adjust based on your camera calibration
-    ground_speed = 10  # Ground speed of the drone in meters per second (known or estimated)
-    frame_rate = 30  # Frame rate of the video in frames per second
-
 def get_speed(n:int=1) -> float:
     """
     Get speed from Camera.
@@ -213,8 +190,7 @@ def get_height(f:h.Fire, angle:float)-> float:
     c_transformed = np.dot(c, r) # Transform into new CS
     ##calculate tag area by using shoelace formula in transformed coordinates: 
     A = h.shoelace_formula(f.corners)
-    r
-
+    #TODO: calculate height by physical to pixel area relation. 
     return 0.0
 
 #* end of OpenCV Code, leave this allone for now..

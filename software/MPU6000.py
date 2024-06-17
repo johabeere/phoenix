@@ -147,21 +147,15 @@ class MPU6000():
 		
 		return {'x' : xGyro, 'y' : yGyro, 'z' : zGyro}
 
-from MPU6000 import MPU6000
-mpu6000 = MPU6000()
-
-while True:
-	mpu6000.gyro_config()
-	mpu6000.accl_config()
-	mpu6000.power_management_1()
-	time.sleep(0.1)
-	accl = mpu6000.read_accl()
-	print("Acceleration in X-Axis : %d"%(accl['x']))
-	print("Acceleration in Y-Axis : %d"%(accl['y']))
-	print("Acceleration in Z-Axis : %d"%(accl['z']))
-	gyro = mpu6000.read_gyro()
-	print("X-Axis of Rotation : %d" %(gyro['x']))
-	print("Y-Axis of Rotation : %d" %(gyro['y']))
-	print("Z-Axis of Rotation : %d" %(gyro['z']))
-	print(" ************************************ ")
-	time.sleep(1)
+	def printvalues(self): 
+		## Perform initial readout. 
+		accl = self.read_accl()
+		print("Acceleration in X-Axis : %d"%(accl['x']))
+		print("Acceleration in Y-Axis : %d"%(accl['y']))
+		print("Acceleration in Z-Axis : %d"%(accl['z']))
+		gyro = self.read_gyro()
+		print("X-Axis of Rotation : %d" %(gyro['x']))
+		print("Y-Axis of Rotation : %d" %(gyro['y']))
+		print("Z-Axis of Rotation : %d" %(gyro['z']))
+		print(" ************************************ ")
+		return
