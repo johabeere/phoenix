@@ -156,6 +156,7 @@ class MPU6000():
 		print("Acceleration in Y-Axis : %d"%(accl['y']))
 		print("Acceleration in Z-Axis : %d"%(accl['z']))
 		gyro = self.read_gyro()
+		print(f"gyro is: {gyro}, type is {type(gyro)}")
 		print("X-Axis of Rotation : %d" %(gyro['x']))
 		print("Y-Axis of Rotation : %d" %(gyro['y']))
 		print("Z-Axis of Rotation : %d" %(gyro['z']))

@@ -1,5 +1,5 @@
 from colorama import Fore, Back, Style
-from pyapriltags import Detector
+from pyapriltags import Detector, Detection
 import yaml, os, sys, inspect, time
 import numpy as np
 from enum import Enum, auto
@@ -127,7 +127,7 @@ class Drone:
     @speed.setter
     def speed(self, v:float)->None: 
         if not 0<v:#<10000: #Plausibility check. #TODO: get reasonable upper bound from testing. 
-            raise ValueError("Drone speed can not be greater than 10000 or smaller than 0.")    
+            raise ValueError(f"Drone speed can not be greater than 10000 or smaller than 0., Is {v}")    
         self._speed = v
     @property
     def angle(self)->float:
@@ -136,7 +136,14 @@ class Drone:
     @angle.setter
     def angle(self, a:float)->None:
         self._angle = a
-    
+    @property 
+    def active(self)-> bool:
+        return self._active
+    @active.setter
+    def active(self, a:float)->None:
+        self._active = a
+
+
     @property 
     def height(self)-> float:
         return self._height
@@ -147,7 +154,7 @@ class Drone:
         self._height=h
     
 
-class Fire:
+class Fire():
     """
     storage and interface class for a Fire.
     
@@ -160,13 +167,16 @@ class Fire:
     time_to_drop:float
     current_target:list
 
-    def __init__(self, d:Detector):
+    def __init__(self, d:Detection):
         ##Transform to new coordinate system: Origin in middle of Frame. 
-        self.center = [d.center[0]-960, d.center[1]-540, 0] 
-        for i in enumerate(d.corners): 
-            self.corners[i]=[d.corners[i][0]-960, d.corners[i][1]-540, 0]
+        self.center = [d.center[0]-320, d.center[1]-240, 0] 
+        print(f"{self.center=}")
+        self.corners = []#init empty
+        for i in range(len(d.corners)): 
+            self.corners.append([d.corners[i][0]-320, d.corners[i][1]-240, 0])
         self.current_target = [0, 0, 0]
-        active = True
+        self.time_to_drop = 0
+        self.active = True
     
     def __str__(self):
         return f"fire with image center at: {self.center}" 
@@ -178,7 +188,11 @@ class Fire:
         self.time_to_drop = (self.center[1]-self.current_target[1])/vel ##TODO pseudo code, check by running!CONVERT TO METERS! ##assuming linear drone motion, time to drop in x direction is t=s/v
         print(f"finished arc, time to drop payload is {self.time_to_drop}.", LogLevel.INFO)
         return
-
+    
+    @classmethod
+    def from_Detection(cls):
+        return cls()
+        
 if __name__ == "__main__": 
     print("henlo") ##never called.
 else: 

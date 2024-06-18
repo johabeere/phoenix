@@ -186,7 +186,7 @@ def get_height(f:h.Fire, angle:float)-> float:
     """
     if not -45<angle<45: 
         print(f"Angle for height calculation is out of bounds, please check input: {angle=}", h.LogLevel.ERROR)
-        return 0.0
+        return 2.0
     ###Idea: get apriltag size. relate image size to physical april tag size. by that, we can estimate 
     c = np.array(f.corners)    
     #Transform coordinates to be orthagonal to camera viewcone: 
@@ -195,14 +195,15 @@ def get_height(f:h.Fire, angle:float)-> float:
     ##calculate tag area by using shoelace formula in transformed coordinates: 
     A = h.shoelace_formula(f.corners)
     #TODO: calculate height by physical to pixel area relation. 
-    return 0.0
+    return 2.0
 
 #* end of OpenCV Code, leave this allone for now..
 
 def is_in_center(f:Fire)->bool: 
+    print(f"trying to find center...{f.center=}")
     variance = h.parameters['Vision']['centerborders']
     imgcenter = h.parameters['Vision'] ['center']
-    return True if abs(imgcenter[0]-f.center[0])<variance[0]*1920 and abs(imgcenter[1]-f.center[1])<variance[1]*1080 else False
+    return True if abs(imgcenter[0]-f.center[0])<variance[0]*640 and abs(imgcenter[1]-f.center[1])<variance[1]*480 else False
 
 def setup():
     if h.parameters['Camera']['calibrated']:

@@ -1,9 +1,9 @@
 Vision: 
   logcolor: "CYAN"
   tag_size: 0.065
-	K: [1033.9140334285826, 0.0, 217.49962599879515, 0.0, 1027.3720125081963, 221.8851424617444, 0.0, 0.0, 1.0] #This needs to be in line 4, too lazy to dynamically check where attribute is stored.
+  K: [1033.9140334285826, 0.0, 217.49962599879515, 0.0, 1027.3720125081963, 221.8851424617444, 0.0, 0.0, 1.0] #This needs to be in line 4, too lazy to dynamically check where attribute is stored.
   tag_to_search_for: 03 
-  center: [960,   540]
+  center: [0, 0]
   centerborders: [0.8, 0.8] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
   target_threshold: 0.1
   
@@ -23,7 +23,7 @@ Main:
   fire_polling: 1
   afterrun_time: 10
   coolmode: True
-  polling_timer: 0.5
+  polling_timer: 5
 Hardware:
   logcolor: "CYAN"
   camera_uptilt: 30.0

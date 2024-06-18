@@ -33,7 +33,7 @@ def hw_init()-> None:
     for i in (h.pins['Flow_rate_sensor'], h.pins['Pushbutton1'], h.pins['Pushbutton2']): 
         GPIO.setup(i, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Pullup = 22, Pulldown = 21, off = 20
     #define Outputs. 
-    for o in (h.pins['Servo1'], h.pins['Servo2'], h.pins['LED_R'], h.pins['LED_G'], h.pins['LED_B']): 
+    for o in (h.pins['Servo1'], h.pins['Servo2'], h.pins['LED_R'], h.pins['LED_G'], h.pins['LED_B'], h.pins['pump']): 
         GPIO.setup(o, GPIO.OUT)
     global R, G, B, S1, S2
     global gyro
@@ -78,12 +78,14 @@ def wait_for_takeoff():
     return
 
 def acquire_payload()-> None: 
+    set_LED(0x98F5FF)#light blue
     ##start pump for a predetermined amount of time. 
     print("...Starting payload aquisition..", h.LogLevel.INFO, "GREEN")
     GPIO.output(h.pins['pump'], 1)
     time.sleep(h.parameters['Hardware']['pumpinterval'])
     GPIO.output(h.pins['pump'], 0)
     print("..assuming payload aquisition finished...",h.LogLevel.INFO, "GREEN")
+    set_LED(0xFFFFFF)#back to white.
     ##end pump
     pass
 
@@ -111,8 +113,8 @@ def set_servo_percent(servo:Literal[1, 2], dc:float)-> None:
     """
     Change dutycycle of one of the two servos. 
     """
-    if not 0.0<dc<1.0: 
-        print(f"Servo value needs to be between 0 and 1, not {dc}.", h.LogLevel.ERROR)
+    if not 0<dc<100: 
+        print(f"Servo value needs to be between 0% and 100%, not {dc}.", h.LogLevel.ERROR)
         return
     eval("S"+str(servo)+".ChangeDutyCycle(" + str(dc) +")")
     return
@@ -141,7 +143,7 @@ def set_LED(color:int):
     r = ((color>>16) & 0xFF)^0xFF
     g = ((color>>8) & 0xFF)^0xFF
     b = (color & 0xFF)^0xFF
-    print(f"Color is: {list([r, g, b])}", h.LogLevel.INFO)
+    print(f"Color is: {list([r, g, b])}", h.LogLevel.DEBUG)
     R.ChangeDutyCycle(float((r/255)*100))
     G.ChangeDutyCycle(float((g/255)*100))
     B.ChangeDutyCycle(float((b/255)*100))
@@ -157,7 +159,7 @@ def get_angle()-> float:
     
     #TODO check which axis is front!!
     #TODO check return datatype!!
-    return gyro.read_gyro()['x']
+    return gyro.read_gyro().get('x')
 
 if __name__ == "__main__": 
     hw_init()
