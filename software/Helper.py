@@ -62,9 +62,6 @@ def pprint(text:str, level:LogLevel=LogLevel.INFO, textcolor:str="WHITE",  **kwa
     #print(eval('Fore.'+str(textcolor)))
     print(eval('Fore.'+ c) + f"{str(parent)}: \t" + eval('Fore.' + level.color)+ f"{level.name}\t"+ Style.RESET_ALL + eval('Fore.'+textcolor) + str(text) + Style.RESET_ALL, **kwargs)
     return
-#TODO: remove. 
-def patch():
-    return parameters['Camera']['libcameraloglevel']
 
 def overwrite_yaml_attribute(linenumber:int, new_value:str):
     """

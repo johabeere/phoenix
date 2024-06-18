@@ -16,7 +16,7 @@ def main():
     make_img_dir()
     start_camera()
     print(f"Running as debug script now, initialized successfully.")
-    #TODO add debug info here.
+    #TODO add debug info here. ??Needed? 
 
 
 # function for starting camera capture. 

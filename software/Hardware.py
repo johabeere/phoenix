@@ -147,14 +147,6 @@ def set_LED(color:int):
     B.ChangeDutyCycle(float((b/255)*100))
     return
 
-def button_callback(channel):
-    print("Button pressed! Restarting script...", h.LogLevel.FAILURE, "RED")
-    set_LED(0xFF0000)#RED
-    time.sleep(1)
-    # Restart the script by returning with exit code 3
-    restart_exit()
-
-
 def get_angle()-> float:
     """
     Gets uptilt angle from Gyroscope. 

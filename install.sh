@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#TODO add build script. Needs the "libcap development headers". 
 ##System update
 sudo apt-get update
 sudo apt-get upgrade
