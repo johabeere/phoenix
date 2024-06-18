@@ -36,10 +36,13 @@ greetstring = "\n\
 "
 
 def main(): 
+    #set the killswitch. 
+    hw.set_killswitch(restart_exit)
     #Object initialization
-    f:Fire
+    f:Fire = None
     d:Drone = Drone()
     #greet user. 
+    hw.set_LED(0xFFFFFF)
     if h.parameters['Main']['coolmode']:
         print(greetstring, h.LogLevel.INFO, "RED")
     else: 
@@ -74,13 +77,14 @@ def polling(d:Drone, f:Fire)-> None:
     d.angle = hw.get_angle() ##set Drone angle. 
     d.buttons = hw.get_buttons()
     
-    print(f"Average speed is: {v.get_speed(2)}")
+    print(f"\n{20*'-'}\nAverage speed\t{d.speed}\nAngle is:\t{d.angle}\nbuttonstates:\t{d.buttons}\n{20*'-'}", h.LogLevel.INFO, "CYAN")
+    
     if f is not None:
         ## Fire found.  
         f = find_fire() ##update Apriltag position, regenerate fire object.  
         d.height = v.get_height()##set Drone height. (requires visible Apriltag.) 
     
-    threading.Timer(h.parameters['Main']['polling_timer'], polling()).start()
+    threading.Timer(h.parameters['Main']['polling_timer'], polling(d, f)).start()
 
 
 
@@ -110,11 +114,17 @@ def extinguish(d:Drone, f:Fire) -> None:
         print(f"{max_cycles=}")
         f.arc_calc(d.speed, d.height)
         if(abs(f.current_target[0]- f.center[0])<h.parameters['Vision']['target_threshold']*1920):
+            time.sleep(f.time_to_drop)
             hw.drop()
             break
         else: 
             continue
 
+def restart_exit(channel): 
+    print("restart exit call...", h.LogLevel.FAILURE)
+    c.camera_cleanup()
+    hw.hw_cleanup()
+    exit(3)
 
 def clean_exit(): 
     print("made it to EoP, shutting down gracefully..", h.LogLevel.INFO)

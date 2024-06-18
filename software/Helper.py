@@ -65,8 +65,8 @@ def pprint(text:str, level:LogLevel=LogLevel.INFO, textcolor:str="WHITE",  **kwa
 #TODO: remove. 
 def patch():
     return parameters['Camera']['libcameraloglevel']
-#TODO: rewrite to change just the affected line. 
-def overwrite_yaml_attribute(attribute, new_value):
+
+def overwrite_yaml_attribute(linenumber:int, new_value:str):
     """
     Overwrites an existing attribute in a YAML file.
 
@@ -75,26 +75,17 @@ def overwrite_yaml_attribute(attribute, new_value):
     """
     try:
         # Read the existing YAML file
-        with open('./config.yaml', 'r') as file:
-            data = yaml.safe_load(file)
-
-        # Split the attribute to handle nested attributes
-        keys = attribute.split('.')
-        d = data
-        for key in keys[:-1]:
-            d = d[key]
-
+        with open("./config.yaml", 'r') as file: 
+            lines = file.readlines()
         # Overwrite the attribute
-        d[keys[-1]] = new_value
-
+        lines[linenumber] = new_value
         # Write the updated data back to the YAML file
         with open('./config.yaml', 'w') as file:
-            yaml.safe_dump(data, file)
-
-        print(f"Attribute '{attribute}' updated successfully.")
+            file.writelines(lines)
+        print(f"line '{linenumber}' updated successfully.")
 
     except Exception as e:
-        print(f"Error updating attribute '{attribute}': {e}")
+        print(f"Error updating line '{linenumber}': {e}")
 
 def true_if_wait2s(oldtime): 
     return True if time.time()-oldtime>=2 else False
@@ -134,12 +125,12 @@ class Drone:
     
     @property
     def speed(self)->float:
-        return self.speed
+        return self._speed
     
     @speed.setter
     def speed(self, v:float)->None: 
-        if not 0<v<100: #Plausibility check.
-            raise ValueError("Drone speed can not be greater than 100 or smaller than 0.")    
+        if not 0<v:#<10000: #Plausibility check. #TODO: get reasonable upper bound from testing. 
+            raise ValueError("Drone speed can not be greater than 10000 or smaller than 0.")    
         self._speed = v
     @property
     def angle(self)->float:
@@ -187,12 +178,12 @@ class Fire:
         if h == 0: return# make sure height is set.
         g:float = 9.81
         self.current_target = [np.sqrt(2*h*vel^2/g), 0]
-        self.time_to_drop = 0
-        return 
+        self.time_to_drop = (self.center[1]-self.current_target[1])/vel ##TODO pseudo code, check by running!CONVERT TO METERS! ##assuming linear drone motion, time to drop in x direction is t=s/v
+        print(f"finished arc, time to drop payload is {self.time_to_drop}.", LogLevel.INFO)
+        return
 
 if __name__ == "__main__": 
     print("henlo") ##never called.
-    overwrite_yaml_attribute('Helper.Test', "Boo")
 else: 
     global parameters 
     parameters = get_params()

@@ -1,3 +1,6 @@
+# Code taken from: https://github.com/ncdcommunity/Raspberry_Pi_MPU6000_6Axis_Motion_Tracking_3Axis_Gyroscope_3Axis_Accelometer_Sensor_Python_library/blob/master/MPU6000.py#L24
+# and modified to fit where necessary. 
+# 
 # Distributed with a free-will license.
 # Use it any way you want, profit or free, provided it fits in the licenses of its associated works.
 # MPU-6000
@@ -8,9 +11,7 @@ import smbus
 import time
 
 # Get I2C bus
-time.sleep(1)
 bus = smbus.SMBus(1)
-time.sleep(1)
 # I2C address of the device
 MPU6000_DEFAULT_ADDRESS				= 0x68
 
@@ -146,6 +147,7 @@ class MPU6000():
 			zGyro -= 65536
 		
 		return {'x' : xGyro, 'y' : yGyro, 'z' : zGyro}
+		#return {'x' : xGyro/131, 'y' : yGyro/131, 'z' : zGyro/131} #TODO check with other sensor if this returns degrees.  
 
 	def printvalues(self): 
 		## Perform initial readout. 
@@ -159,3 +161,17 @@ class MPU6000():
 		print("Z-Axis of Rotation : %d" %(gyro['z']))
 		print(" ************************************ ")
 		return
+
+###debug main method: 
+def main(): 
+	mpu:MPU6000 = MPU6000()
+	while True: 
+		mpu.printvalues()
+		time.sleep(1)
+
+
+if __name__ == "__main__": 
+	try: 
+		main()
+	except KeyboardInterrupt:
+		exit(0)

@@ -6,6 +6,4 @@ Pushbutton2: 6
 LED_R: 25
 LED_G: 24
 LED_B: 23
-SDA: 2 #Not 
-SCL: 3 #needed?
 pump: 16 

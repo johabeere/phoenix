@@ -7,48 +7,67 @@ from typing import Literal
 
 #loaded water value in ml. 
 water:float=0.0
-##MPU6000 object definiton. 
-gyro:MPU = None
-##PWM Objects
-R = GPIO.PWM(h.pins['ledr'], 50)
-G = GPIO.PWM(h.pins['ledg'], 50)
-B = GPIO.PWM(h.pins['ledb'], 50)
-S1 = GPIO.PWM(h.pins['Servo1'], 50)
-S2 = GPIO.PWM(h.pins['Servo2'], 50)
 
 def main(): 
     print("Henlo", h.LogLevel.INFO, "CYAN")
+    while True: 
+        S1.ChangeDutyCycle(5)
+        S2.ChangeDutyCycle(5)
+        time.sleep(1)
+        S1.ChangeDutyCycle(7.5)
+        S2.ChangeDutyCycle(7.5)
+        time.sleep(1)
+        S1.ChangeDutyCycle(10)
+        S2.ChangeDutyCycle(10)
+        time.sleep(1)
+        print("looping")
 
-def hw_init():
+def set_killswitch(restart_callback)-> None: 
+    GPIO.add_event_detect(h.pins['Pushbutton1'], GPIO.FALLING, callback=restart_callback, bouncetime=300)
+    return
+
+def hw_init()-> None:
     #define pinformat. 
     GPIO.setmode(GPIO.BCM)
     #define Inputs. 
     for i in (h.pins['Flow_rate_sensor'], h.pins['Pushbutton1'], h.pins['Pushbutton2']): 
-        GPIO.setup(i, GPIO.IN)
+        GPIO.setup(i, GPIO.IN, pull_up_down=GPIO.PUD_UP) #Pullup = 22, Pulldown = 21, off = 20
     #define Outputs. 
     for o in (h.pins['Servo1'], h.pins['Servo2'], h.pins['LED_R'], h.pins['LED_G'], h.pins['LED_B']): 
         GPIO.setup(o, GPIO.OUT)
-    GPIO.add_event_detect(h.pins['Pushbutton1'], GPIO.FALLING, callback=button_callback, bouncetime=300)
+    global R, G, B, S1, S2
+    global gyro
+    #initialize Gyro. 
+    gyro = MPU()
+    #PWM population. 
+    R = GPIO.PWM(h.pins['LED_R'], 50)
+    G = GPIO.PWM(h.pins['LED_G'], 50)
+    B = GPIO.PWM(h.pins['LED_B'], 50)
+    S1 = GPIO.PWM(h.pins['Servo1'], 50)
+    S2 = GPIO.PWM(h.pins['Servo2'], 50)
+    
     #greet user. 
     print("Henlo",h.LogLevel.INFO,  "CYAN")
     #start PWM interfaces.    
-    gyro = MPU()
     R.start(0) #argument is dutycycle in %
     G.start(0)
     B.start(0)
     S1.start(0)
     S2.start(0)
-
+#TODO fix lgpio exit erros. 
 def hw_cleanup(): 
-    #stop PWM interfaces. 
-    R.stop()
-    G.stop()
-    B.stop()
-    S1.stop()
-    S2.stop()
-    #cleanup pins. 
-    GPIO.cleanup() 
-
+    try: 
+        #stop PWM interfaces. 
+        R.stop()  #! causes an uncaught exception in the lgpio module!
+        G.stop()  #! causes an uncaught exception in the lgpio module!
+        B.stop()  #! causes an uncaught exception in the lgpio module!
+        S1.stop()  #! causes an uncaught exception in the lgpio module!
+        S2.stop()  #! causes an uncaught exception in the lgpio module!
+        #cleanup pins. 
+        GPIO.cleanup() 
+    except TypeError: 
+        #catches the known error in lgpio.py line 1084 unsupported operand type(s) for &: 'NoneType' and 'int'
+        pass
 def wait_for_takeoff():
     print("Waiting for Takeoff...", h.LogLevel.INFO)
     acc = gyro.read_accl()['z']
@@ -95,7 +114,7 @@ def set_servo_percent(servo:Literal[1, 2], dc:float)-> None:
     if not 0.0<dc<1.0: 
         print(f"Servo value needs to be between 0 and 1, not {dc}.", h.LogLevel.ERROR)
         return
-    eval("Servo"+servo+".ChangeDutyCycle("+dc+")")
+    eval("S"+str(servo)+".ChangeDutyCycle(" + str(dc) +")")
     return
 
 def watersensor():
@@ -119,8 +138,10 @@ def set_LED(color:int):
     if color>0xFFFFFF: 
         print(f"Not a valid color: {hex(color)}", h.LogLevel.ERROR)
         return
-    r, g, b = bytes(color)
-    print(f"Color is: {list(r, g, b)}", h.LogLevel.INFO)
+    r = (color>>16) & 0xFF
+    g = (color>>8) & 0xFF
+    b = color & 0xFF
+    print(f"Color is: {list([r, g, b])}", h.LogLevel.INFO)
     R.ChangeDutyCycle(float((r/255)*100))
     G.ChangeDutyCycle(float((g/255)*100))
     B.ChangeDutyCycle(float((b/255)*100))
@@ -130,8 +151,8 @@ def button_callback(channel):
     print("Button pressed! Restarting script...", h.LogLevel.FAILURE, "RED")
     set_LED(0xFF0000)#RED
     time.sleep(1)
-    # Restart the script
-    os.execv(sys.executable, ['python'] + sys.argv)
+    # Restart the script by returning with exit code 3
+    restart_exit()
 
 
 def get_angle()-> float:
@@ -152,4 +173,5 @@ if __name__ == "__main__":
     hw_cleanup()
 else: 
     hw_init()
+    pass
     #module setup

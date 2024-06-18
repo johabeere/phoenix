@@ -55,7 +55,6 @@ def get_speed(n:int=1) -> float:
     while i<n: 
         p0 = cv2.goodFeaturesToTrack(old_gray, mask=None, **feature_params)
         frame = c.picam2.capture_array()
-   
         if frame is None:
             return None
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -84,8 +83,8 @@ def get_speed(n:int=1) -> float:
         p0 = good_new.reshape(-1, 1, 2)
         i+=1
     ## got all values, now returning average...
-    print(f"Got speeds: {res}",h.LogLevel.INFO,"YELLOW")
-    return sum(i for i in res)/n
+    print(f"Got speeds: {res}",h.LogLevel.DEBUG,"YELLOW")
+    return sum(i for i in res if str(i)!='nan')/n #changed to accout for nan values.
 
 def calibrate():
     """
@@ -105,22 +104,21 @@ def calibrate():
                 pass 
             print("click", h.LogLevel.DEBUG)
             c.picam2.capture_file(f"{str(parameters['Camera']['imagepath'])}/calibration{i}.jpg")
- 
+
     # Defining the dimensions of checkerboard
     CHECKERBOARD = (6, 9)
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
- 
+
     # Creating vector to store vectors of 3D points for each checkerboard image
     objpoints = []
     # Creating vector to store vectors of 2D points for each checkerboard image
     imgpoints = [] 
- 
- 
+
     # Defining the world coordinates for 3D points
     objp = np.zeros((1, CHECKERBOARD[0] * CHECKERBOARD[1], 3), np.float32)
     objp[0,:,:2] = np.mgrid[0:CHECKERBOARD[0], 0:CHECKERBOARD[1]].T.reshape(-1, 2)
     prev_img_shape = None
- 
+
     # Extracting path of individual image stored in a given directory
     images = glob.glob(f"{parameters['Camera']['imagepath']}/calibration*.jpg")
     for fname in images:
@@ -170,6 +168,8 @@ def calibrate():
     print(rvecs)
     print("tvecs : \n")
     print(tvecs)
+    #TODO: try and activate. 
+    #overwrite_yaml_attribute(3, f"\tK: {list(mtx)} #This needs to be in line 4, too lazy to dynamically check where attribute is stored.\n")
 
 def get_height(f:h.Fire, angle:float)-> float: 
     """
