@@ -138,9 +138,9 @@ def set_LED(color:int):
     if color>0xFFFFFF: 
         print(f"Not a valid color: {hex(color)}", h.LogLevel.ERROR)
         return
-    r = (color>>16) & 0xFF
-    g = (color>>8) & 0xFF
-    b = color & 0xFF
+    r = ((color>>16) & 0xFF)^0xFF
+    g = ((color>>8) & 0xFF)^0xFF
+    b = (color & 0xFF)^0xFF
     print(f"Color is: {list([r, g, b])}", h.LogLevel.INFO)
     R.ChangeDutyCycle(float((r/255)*100))
     G.ChangeDutyCycle(float((g/255)*100))

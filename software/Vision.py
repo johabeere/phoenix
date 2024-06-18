@@ -1,8 +1,9 @@
 import Helper as h, Camera as c
 from Helper import pprint as print, Fire, parameters
 from pyapriltags import Detector
-import os, numpy as np, yaml,cv2, time, glob
+import os, numpy as np, yaml,cv2, time, glob, itertools
 from scipy.spatial.transform import Rotation as R
+
 
 at_detector = Detector(searchpath=['apriltags'],families='tag36h11',nthreads=1, quad_decimate=1.0, quad_sigma=0.0, refine_edges=1, decode_sharpening=0.25, debug=0)
 
@@ -168,8 +169,11 @@ def calibrate():
     print(rvecs)
     print("tvecs : \n")
     print(tvecs)
-    #TODO: try and activate. 
-    #overwrite_yaml_attribute(3, f"\tK: {list(mtx)} #This needs to be in line 4, too lazy to dynamically check where attribute is stored.\n")
+    print("writing to yaml now....", h.LogLevel.INFO, "MAGENTA")
+    #TODO: try and activate.
+    K:list = list(itertools.chain.from_iterable(mtx))#convert 3x3 matrix to list. 
+    print(f"flattened list: {K}")
+    h.overwrite_yaml_attribute(3, f"\tK: {K} #This needs to be in line 4, too lazy to dynamically check where attribute is stored.\n")
 
 def get_height(f:h.Fire, angle:float)-> float: 
     """

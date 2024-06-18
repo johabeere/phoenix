@@ -1,7 +1,7 @@
 Vision: 
   logcolor: "CYAN"
   tag_size: 0.065
-  K: [336.7755634193813, 0.0, 333.3575643300718, 0.0, 336.02729840829176, 212.77376312080065, 0.0, 0.0, 1.0] #This needs to be in line 4, too lazy to dynamically check where attribute is stored. 
+	K: [1033.9140334285826, 0.0, 217.49962599879515, 0.0, 1027.3720125081963, 221.8851424617444, 0.0, 0.0, 1.0] #This needs to be in line 4, too lazy to dynamically check where attribute is stored.
   tag_to_search_for: 03 
   center: [960,   540]
   centerborders: [0.8, 0.8] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
@@ -29,9 +29,9 @@ Hardware:
   camera_uptilt: 30.0
   accellwaitpolling: 0.2 #time to poll for accell change during takeoff---
   zaccell: 0.2
-  pumpinterval: 0 #time to take on water. shortened to stop lengthy runtimes...
+  pumpinterval: 0   #time to take on water. shortened to stop lengthy runtimes...
   target_threshold: 0.1
-  drop_servo: 1 #servo output which releases the payload. 
+  drop_servo: 1     #servo output which releases the payload. 
   drop_position: 10 #servo position which drops the payload. Range: dutycycle in %, for SG20 servos between 5.0 for minpos(0°) and 10.0 for maxpos(90°). 
 __main__: 
   logcolor: "BLUE"
