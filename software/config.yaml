@@ -23,7 +23,7 @@ Main:
   fire_polling: 1
   afterrun_time: 10
   coolmode: True
-  polling_timer: 5
+  polling_timer: 0.2
 Hardware:
   logcolor: "CYAN"
   camera_uptilt: 30.0

@@ -86,7 +86,8 @@ def get_speed(n:int=1) -> float:
     ## got all values, now returning average...
     print(f"Got speeds: {res}",h.LogLevel.DEBUG,"YELLOW")
     ##perform nan checks here already:
-    clean_res = list((i for i in res_mm if str(i)!='nan'))
+    clean_res = list((i for i in res if str(i)!='nan'))
+    print(f"{c.get_mm_per_px()}")
     res_mm = list((i*c.get_mm_per_px() for i in clean_res)) 
     print(f"converted speeds in mm/s: {res_mm=}", h.LogLevel.INFO, "CYAN")
     return sum(res_mm)/n #changed to accout for nan values.

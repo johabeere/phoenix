@@ -123,7 +123,7 @@ def extinguish(d:Drone, f:Fire) -> None:
     max_cycles = 100 #prevents endless loop
     while max_cycles>0: 
         max_cycles-=1
-        print(f"{max_cycles=}")
+        print(f"{max_cycles=}", h.LogLevel.INFO)
         f.arc_calc(d.speed, d.height)
         if(abs(f.current_target[0]- f.center[0])<h.parameters['Vision']['target_threshold']*1920):
             time.sleep(f.time_to_drop)

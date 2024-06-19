@@ -186,7 +186,7 @@ class Fire():
         g:float = 9810.0 #g in mm/s²
         self.current_target = [np.sqrt((2*h*vel^2)/g), 0] #aim of drone if it was dropped now, in mm away from drone. 
         self.time_to_drop = (self.center[0]-self.current_target[0])/vel ##TODO pseudo code, check by running!CONVERT TO METERS! ##assuming linear drone motion, time to drop in x direction is t=s/v
-        print(f"finished arc, time to drop payload is {self.time_to_drop}.", LogLevel.INFO)
+        pprint(f"finished arc, time to drop payload is {self.time_to_drop}.", LogLevel.ERROR)
         return
 
 if __name__ == "__main__": 
