@@ -85,7 +85,11 @@ def get_speed(n:int=1) -> float:
         i+=1
     ## got all values, now returning average...
     print(f"Got speeds: {res}",h.LogLevel.DEBUG,"YELLOW")
-    return sum(i for i in res if str(i)!='nan')/n #changed to accout for nan values.
+    ##perform nan checks here already:
+    clean_res = list((i for i in res_mm if str(i)!='nan'))
+    res_mm = list((i*c.get_mm_per_px() for i in clean_res)) 
+    print(f"converted speeds in mm/s: {res_mm=}", h.LogLevel.INFO, "CYAN")
+    return sum(res_mm)/n #changed to accout for nan values.
 
 def calibrate():
     """
@@ -184,9 +188,10 @@ def get_height(f:h.Fire, angle:float)-> float:
     Returns: 
         :returns: float height above ground in m. 
     """
-    if not -45<angle<45: 
-        print(f"Angle for height calculation is out of bounds, please check input: {angle=}", h.LogLevel.ERROR)
-        return 2.0
+    #skipping this check for first testflight. #! TODO add Back. 
+    #if not -45<angle<45: 
+    #    print(f"Angle for height calculation is out of bounds, please check input: {angle=}", h.LogLevel.ERROR)
+    #    return 2000.0
     ###Idea: get apriltag size. relate image size to physical april tag size. by that, we can estimate 
     c = np.array(f.corners)    
     #Transform coordinates to be orthagonal to camera viewcone: 
@@ -194,8 +199,12 @@ def get_height(f:h.Fire, angle:float)-> float:
     c_transformed = np.dot(c, r) # Transform into new CS
     ##calculate tag area by using shoelace formula in transformed coordinates: 
     A = h.shoelace_formula(f.corners)
+    #height = (tag_size_mm*focal_length_mm)/(no_distortion_side_lengths_px * pixel_width)
+    height_in_mm = (h.parameters['Vision']['tag_size']*h.parameters['Camera']['physical'][0])/(np.sqrt(A)*c.get_mm_per_px())
     #TODO: calculate height by physical to pixel area relation. 
-    return 2.0
+    print(f"Height would be\t{height_in_mm=}, or in m:\t{height_in_mm/1000}, returning 2000.0")
+    return 2000.0 #! TODO replace with below
+    #return height_in_mm
 
 #* end of OpenCV Code, leave this allone for now..
 

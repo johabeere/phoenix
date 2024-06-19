@@ -183,16 +183,12 @@ class Fire():
 
     def arc_calc(self, vel:float, h:float) -> None: # setter method for the current_target.
         if h == 0: return# make sure height is set.
-        g:float = 9.81
-        self.current_target = [np.sqrt(2*h*vel^2/g), 0]
-        self.time_to_drop = (self.center[1]-self.current_target[1])/vel ##TODO pseudo code, check by running!CONVERT TO METERS! ##assuming linear drone motion, time to drop in x direction is t=s/v
+        g:float = 9810.0 #g in mm/s²
+        self.current_target = [np.sqrt((2*h*vel^2)/g), 0] #aim of drone if it was dropped now, in mm away from drone. 
+        self.time_to_drop = (self.center[0]-self.current_target[0])/vel ##TODO pseudo code, check by running!CONVERT TO METERS! ##assuming linear drone motion, time to drop in x direction is t=s/v
         print(f"finished arc, time to drop payload is {self.time_to_drop}.", LogLevel.INFO)
         return
-    
-    @classmethod
-    def from_Detection(cls):
-        return cls()
-        
+
 if __name__ == "__main__": 
     print("henlo") ##never called.
 else: 

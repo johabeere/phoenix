@@ -41,6 +41,9 @@ def camera_cleanup():
             print(f"i={i}, removing {h.parameters['Camera']['imagepath']+'/'+i}")
             os.remove(f"{h.parameters['Camera']['imagepath']+'/'+i}")
 
+def get_mm_per_px()-> float: 
+    return (h.parameters['Camera']['physical'][1]/h.parameters['Camera']['physical'][3]+h.parameters['Camera']['physical'][2]/h.parameters['Camera']['physical'][4])/2
+
 if __name__=="__main__": 
     #empty / debug main function. 
     try: 
