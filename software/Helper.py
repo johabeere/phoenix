@@ -3,8 +3,7 @@ from pyapriltags import Detector, Detection
 import yaml, os, sys, inspect, time
 import numpy as np
 from enum import Enum, auto
-import smbus
-import time
+import smbus, time, fnmatch
 
 global pins
 global debug 

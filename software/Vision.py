@@ -46,7 +46,6 @@ def get_speed(n:int=1) -> float:
     frame_rate = 30
     res:list=[]
     old_frame = c.picam2.capture_array()
-    cv2.imwrite("CV2.jpg", old_frame) 
     if old_frame is None:
         print("Didn't get image.", h.LogLevel.ERROR, "RED")
 
@@ -61,7 +60,11 @@ def get_speed(n:int=1) -> float:
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         if h.debug: 
             for name, img in {"old_gray": old_gray, "old_frame": old_frame, "frame": frame, "frame_gray": frame_gray}.items():
-                cv2.imwrite(f"./captures/Vision_{str(name)}_{time.time()}.jpg", img) 
+                cv2.imwrite(f"./captures/Vision_{str(name)}_{time.time()}.jpg", img)
+        else: 
+            for name, img in {"frame": frame}.items():
+                cv2.imwrite(f"./captures/Vision_{str(name)}_{time.time()}.jpg", img)
+
         # Calculate optical flow
         p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
 
@@ -144,14 +147,13 @@ def calibrate():
             objpoints.append(objp)
             # refining pixel coordinates for given 2d points.
             corners2 = cv2.cornerSubPix(gray, corners, (11,11),(-1,-1), criteria)
-         
+            
             imgpoints.append(corners2)
- 
+
             # Draw and display the corners
             img = cv2.drawChessboardCorners(img, CHECKERBOARD, corners2, ret)
-     
+            cv2.imwrite(f"./captures/SHOW_{time.time()}.jpg", img)
         #cv2.imwrite(f"{parameters['Camera']['imagepath']}/SHOW_{fname}",gray)
-        cv2.imwrite(f"./captures/SHOW_{time.time()}.jpg", gray)
         cv2.waitKey(0)
  
     #cv2.destroyAllWindows() #TODO check if this is necessary for non-display use.
@@ -222,6 +224,11 @@ def setup():
     else: 
         print("nothing to set up.", h.LogLevel.DEBUG)
 
+def vision_cleanup(): 
+    for i in os.listdir(h.parameters['Camera']['imagepath']):
+        if h.fnmatch.fnmatch(i, "*"): 
+            print(f"i={i}, removing {h.parameters['Camera']['imagepath']+'/'+i}")
+            os.remove(f"{h.parameters['Camera']['imagepath']+'/'+i}")
 
 def main():
     print("I am your eyes.", h.LogLevel.DEBUG)
@@ -233,6 +240,7 @@ if __name__=="__main__":
         main()
     except KeyboardInterrupt: 
         print("goodbye, cleaning up before I leave...", h.LogLevel.INFO)
+        vision_cleanup()
         exit()
 else: 
     try: 
@@ -240,4 +248,5 @@ else:
         setup()  
     except KeyboardInterrupt: 
         print("goodbye, cleaning up before I leave...")
+        vision_cleanup()
         exit()
