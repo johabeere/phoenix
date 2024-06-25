@@ -169,11 +169,11 @@ class Fire():
 
     def __init__(self, d:Detection):
         ##Transform to new coordinate system: Origin in middle of Frame. 
-        self.center = [d.center[0]-(h.parameters['Camera']['resolution'][0]/2), d.center[1]-(h.parameters['Camera']['resolution'][1]/2), 0] 
+        self.center = [d.center[0]-(parameters['Camera']['resolution'][0]/2), d.center[1]-(parameters['Camera']['resolution'][1]/2), 0] 
         print(f"{self.center=}")
         self.corners = []#init empty
         for i in range(len(d.corners)): 
-            self.corners.append([d.corners[i][0]-(h.parameters['Camera']['resolution'][0]/2), d.corners[i][1]-(h.parameters['Camera']['resolution'][1]/2), 0])
+            self.corners.append([d.corners[i][0]-(parameters['Camera']['resolution'][0]/2), d.corners[i][1]-(parameters['Camera']['resolution'][1]/2), 0])
         self.current_target = [0, 0, 0]
         self.time_to_drop = 0
         self.active = True

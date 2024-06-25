@@ -28,12 +28,14 @@ Main:
   polling_timer: 0.2
 Hardware:
   logcolor: "CYAN"
-  camera_uptilt: 30.0
+  camera_downtilt: 30.0
+  camservo_angles: [10, 80]
   accellwaitpolling: 0.2 #time to poll for accell change during takeoff---
   zaccell: 0.2
-  pumpinterval: 0   #time to take on water. shortened to stop lengthy runtimes...
+  pumpinterval: 3 #time to take on water. shortened to stop lengthy runtimes...
   target_threshold: 0.1
   drop_servo: 1     #servo output which releases the payload. 
+  cam_servo: 2      #servo output which controls the camera.
   drop_position: 10 #servo position which drops the payload. Range: dutycycle in %, for SG20 servos between 5.0 for minpos(0°) and 10.0 for maxpos(90°). 
 __main__: 
   logcolor: "BLUE"

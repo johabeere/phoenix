@@ -185,7 +185,7 @@ def get_height(f:h.Fire, angle:float)-> float:
     get height via computervision and trigonometry.
     Arguments: 
         :parameter: f is the Fire which we want to estimate the height from. 
-        :parameter: angle is the angle obove the horizon which the camera currently faces. (gyro-angle-uptilt).
+        :parameter: angle is the angle obove the horizon which the camera currently faces. (gyro-angle-downtilt).
     Returns: 
         :returns: float height above ground in m. 
     """

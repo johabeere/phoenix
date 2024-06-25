@@ -54,6 +54,7 @@ def hw_init()-> None:
     B.start(0)
     S1.start(0)
     S2.start(0)
+    set_camera_angle(h.parameters['Hardware']['camera_downtilt'])
 #TODO fix lgpio exit erros. 
 def hw_cleanup(): 
     try: 
@@ -125,6 +126,13 @@ def watersensor():
     """
     return None
 
+def set_camera_angle(angle:float) -> None:
+    if not 0<angle<90: 
+        print(f"Systen does not support an angle outside of 0 to 90°, was given: {angle=}", h.LogLevel.INFO)
+        return
+    set_servo_percent(h.parameters['Hardware']['cam_servo'], h.parameters['Hardware']['camservo_angles'][0]+((h.parameters['Hardware']['camservo_angles'][0]-h.parameters['Hardware']['camservo_angles'][1])/90)*angle)
+
+
 def get_buttons()-> list: 
     """
     returns a list of the two buttonstates. 
@@ -151,7 +159,7 @@ def set_LED(color:int):
 
 def get_angle()-> float:
     """
-    Gets uptilt angle from Gyroscope. 
+    Gets downtilt angle from Gyroscope. 
     """
     
     #TODO check which axis is front!!
