@@ -213,7 +213,7 @@ def is_in_center(f:Fire)->bool:
     print(f"trying to find center...{f.center=}")
     variance = h.parameters['Vision']['centerborders']
     imgcenter = h.parameters['Vision'] ['center']
-    return True if abs(imgcenter[0]-f.center[0])<variance[0]*640 and abs(imgcenter[1]-f.center[1])<variance[1]*480 else False
+    return True if abs(imgcenter[0]-f.center[0])<variance[0]*(h.parameters['Camera']['resolution'][0]/2) and abs(imgcenter[1]-f.center[1])<variance[1]*(h.parameters['Camera']['resolution'][1]/2) else False
 
 def setup():
     if h.parameters['Camera']['calibrated']:

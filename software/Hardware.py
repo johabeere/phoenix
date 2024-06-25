@@ -152,9 +152,6 @@ def set_LED(color:int):
 def get_angle()-> float:
     """
     Gets uptilt angle from Gyroscope. 
-
-
-    
     """
     
     #TODO check which axis is front!!

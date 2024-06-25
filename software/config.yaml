@@ -5,10 +5,12 @@ Vision:
   tag_to_search_for: 03 
   center: [0, 0]
   centerborders: [0.8, 0.8] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
-  target_threshold: 0.1
+  target_threshold: 0.1 ##percentage of x resolution the camera considers "close enough" to drop. (0.1 = 10% of x image size. )
   
 Camera:
   calibrated: False
+  sensor_mode: 1 # set raw stream to 2304x1295px, 0x0 crop. (full FOV)
+  resolution: [1280, 720]
   logcolor: "CYAN"
   imagepath: "./captures"
   libcameraloglevel: "3" #not working right now :( #"0" - DEBUG, "1" - INFO, "2" - WARN, "3" - ERROR, "4" - FATAL
