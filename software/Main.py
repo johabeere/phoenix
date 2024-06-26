@@ -133,6 +133,7 @@ def extinguish(d:Drone, f:Fire) -> None:
         else: 
             time.sleep(2.5/100)
             continue
+    c.final_image()
     hw.drop(d)
     hw.set_LED(0xFFFFFF)#WHITE
     return

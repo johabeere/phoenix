@@ -39,6 +39,12 @@ def take_pictures(num_pictures:int):
         picam2.capture_file(f"{h.parameters['Camera']['imagepath']}/capture{i}.jpg")
         time.sleep(burst_delay)
 
+def final_image()-> None:
+    seconds = time.time()
+    local_time = time.ctime(seconds)
+    picam2.capture_file(f"{h.parameters['Camera']['imagepath']}/HEADSHOT_{local_time}.jpg")
+    return
+
 def make_img_dir(): 
     if not os.path.isdir(h.parameters['Camera']['imagepath']): 
         os.makedirs(h.parameters['Camera']['imagepath'])

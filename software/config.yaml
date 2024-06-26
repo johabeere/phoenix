@@ -4,7 +4,7 @@ Vision:
   K: [1033.9140334285826, 0.0, 217.49962599879515, 0.0, 1027.3720125081963, 221.8851424617444, 0.0, 0.0, 1.0] #This needs to be in line 4, too lazy to dynamically check where attribute is stored.
   tag_to_search_for: 42 
   center: [0, 0]
-  centerborders: [0.5, 0.5] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
+  centerborders: [0.5, 0.8] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
   target_threshold: 0.15 ##percentage of x resolution the camera considers "close enough" to drop. (0.1 = 10% of x image size. )
   
 Camera:
