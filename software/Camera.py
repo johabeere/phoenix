@@ -4,7 +4,11 @@ from picamera2 import Picamera2
 from libcamera import controls #rpi-libcamera package
 import os, fnmatch, time
 
-picam2 = Picamera2()
+try: 
+    picam2 = Picamera2()
+except IndexError: 
+    print("Please connect a Camera!", h.LogLevel.FAILURE, "RED")
+    exit()
 frame_rate = h.parameters['Camera']['frame_rate']
 ##set camera res mode
 mode = picam2.sensor_modes[h.parameters['Camera']['sensor_mode']]

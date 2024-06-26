@@ -8,6 +8,10 @@ import smbus, time, fnmatch
 global pins
 global debug 
 
+seconds = time.time()
+local_time = time.ctime(seconds)
+
+
 class LogLevel(Enum): 
     DEBUG = 0
     INFO = 1
@@ -59,7 +63,10 @@ def pprint(text:str, level:LogLevel=LogLevel.INFO, textcolor:str="WHITE",  **kwa
         return
     #print(textcolor)
     #print(eval('Fore.'+str(textcolor)))
-    print(eval('Fore.'+ c) + f"{str(parent)}: \t" + eval('Fore.' + level.color)+ f"{level.name}\t"+ Style.RESET_ALL + eval('Fore.'+textcolor) + str(text) + Style.RESET_ALL, **kwargs)
+    text = str(eval('Fore.'+ c) + f"{str(parent)}: \t" + eval('Fore.' + level.color)+ f"{level.name}\t"+ Style.RESET_ALL + eval('Fore.'+textcolor) + str(text) + Style.RESET_ALL)
+    print(text, **kwargs)
+    with open('./logs/' + local_time + '.log', 'a') as file:
+        file.write(text + '\n', **kwargs)    
     return
 
 def overwrite_yaml_attribute(linenumber:int, new_value:str):
