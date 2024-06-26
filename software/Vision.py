@@ -176,7 +176,6 @@ def calibrate():
     print("tvecs : \n")
     print(tvecs)
     print("writing to yaml now....", h.LogLevel.INFO, "MAGENTA")
-    #TODO: try and activate.
     K:list = list(itertools.chain.from_iterable(mtx))#convert 3x3 matrix to list. 
     print(f"flattened list: {K}")
     h.overwrite_yaml_attribute(3, f"\tK: {K} #This needs to be in line 4, too lazy to dynamically check where attribute is stored.\n")
@@ -206,7 +205,6 @@ def get_height(f:Fire, angle:float)-> float:
     print(f"{A=}, {A_old=}")
     #height = (tag_size_mm*focal_length_mm)/(no_distortion_side_lengths_px * pixel_width)
     height_in_mm = (h.parameters['Vision']['tag_size']*h.parameters['Camera']['physical'][0])/(np.sqrt(A)*h.get_mm_per_px())
-    #TODO: calculate height by physical to pixel area relation. 
     print(f"Height would be\t{height_in_mm=}, or in m:\t{height_in_mm/1000}")
     return height_in_mm
 

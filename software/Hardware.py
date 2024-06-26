@@ -79,6 +79,7 @@ def wait_for_takeoff():
     return
 
 def acquire_payload()-> None: 
+    set_servo_percent(1, 4.0)# move servo closed here.
     set_LED(0x98F5FF)#light blue
     ##start pump for a predetermined amount of time. 
     print("...Starting payload aquisition..", h.LogLevel.INFO, "GREEN")
@@ -103,6 +104,9 @@ def drop(d:h.Drone) -> None:
     set_servo_percent(h.parameters['Hardware']['drop_servo'], h.parameters['Hardware']['drop_position'])
     return
 
+def set_mounting() -> None: 
+    set_servo_percent(h.parameters['Hardware']['drop_servo'], h.parameters['Hardware']['mounting_position'])
+    return
 def done()-> None:
     """
     set LED to symbol done.
