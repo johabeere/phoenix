@@ -85,7 +85,6 @@ def polling(d:Drone, f:Fire)-> None:
             ## Fire found.  
             f = find_fire() ##update Apriltag position, regenerate fire object.  
             d.height = v.get_height(f, d.angle)##set Drone height. (requires visible Apriltag.) 
-    
         time.sleep(h.parameters['Main']['polling_timer'])
         #threading.Timer(h.parameters['Main']['polling_timer'], polling(d, f)).start()
     return
@@ -119,19 +118,22 @@ def find_fire()-> Fire:
 def extinguish(d:Drone, f:Fire) -> None:
     ##start rapidly polling for drop time detection. 
     ##we can already assume that a fire is present and in a theoretically droppable path. 
+    d.height = v.get_height(f, d.angle)#make sure height is as acurate as possible, manual polling.
     hw.set_LED(0x0000FF)#Blue
     max_cycles = 100 #prevents endless loop
     while max_cycles>0: 
         max_cycles-=1
-        print(f"{max_cycles=}", h.LogLevel.INFO)
+        print(f"{max_cycles=}", h.LogLevel.DEBUG)
         f.arc_calc(d.speed, d.height)
-        if(abs(f.current_target[0]- f.center[0])<h.parameters['Vision']['target_threshold']*h.parameters['Camera']['resolution'][0]):
+        dtc = abs(f.current_target[0]- f.center[0])
+        print(f"Distance to center: {dtc=}")
+        if(dtc<h.parameters['Vision']['target_threshold']*h.parameters['Camera']['resolution'][0]):
             time.sleep(f.time_to_drop)
-            hw.drop(d)
             break
         else: 
             time.sleep(2.5/100)
             continue
+    hw.drop(d)
     hw.set_LED(0xFFFFFF)#WHITE
     return
 

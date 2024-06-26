@@ -100,7 +100,9 @@ def shoelace_formula(vertices:list)->float:
     area = abs(area) / 2.0
     return area
 
-
+def get_mm_per_px()-> float:
+    #requires image crop of 0,0 to work properly.
+    return (parameters['Camera']['physical'][1]/parameters['Camera']['resolution'][0]+parameters['Camera']['physical'][2]/parameters['Camera']['resolution'][1])/2
 
 class Drone:
     """
@@ -148,7 +150,7 @@ class Drone:
         return self._height
     @height.setter
     def height(self, h:float): 
-        if not 0<h<10:
+        if not 0<h<10000:
             raise ValueError("Height can not be outside 0 to 10 meters.")
         self._height=h
     
@@ -181,11 +183,18 @@ class Fire():
         return f"fire with image center at: {self.center}" 
 
     def arc_calc(self, vel:float, h:float) -> None: # setter method for the current_target.
+        pprint(f"Got: {vel=}, {h=}", LogLevel.DEBUG)
         if h == 0: return# make sure height is set.
         g:float = 9810.0 #g in mm/s²
-        self.current_target = [np.sqrt((2*h*vel^2)/g), 0] #aim of drone if it was dropped now, in mm away from drone. 
-        self.time_to_drop = (self.center[0]-self.current_target[0])/vel ##TODO pseudo code, check by running!CONVERT TO METERS! ##assuming linear drone motion, time to drop in x direction is t=s/v
-        pprint(f"finished arc, time to drop payload is {self.time_to_drop}.", LogLevel.ERROR)
+        self.current_target = [np.sqrt((2*h*vel*vel)/g), 0] #aim of drone if it was dropped now, in mm away from drone. 
+        pprint(f"Current target would be: {self.current_target=}", LogLevel.DEBUG)
+        drop_time= abs((self.center[0]*get_mm_per_px()-self.current_target[0])/vel) ##assuming linear drone motion, time to drop in x direction is t=s/v
+        if not 0<drop_time<10 : 
+            pprint("FAILED to calculate a realistic droptime. setting 3.5s and seeing what happens...", LogLevel.FAILURE, "RED")
+            self.time_to_drop = 3.5
+        else: 
+            self.time_to_drop = drop_time
+        pprint(f"finished arc, time to drop payload is {self.time_to_drop}.", LogLevel.INFO)
         return
 
 if __name__ == "__main__": 

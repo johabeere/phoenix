@@ -108,7 +108,7 @@ def done()-> None:
     set LED to symbol done.
     """
     set_LED(0x00FF00)#Green. 
-    pass
+    return
 
 def set_servo_percent(servo:Literal[1, 2], dc:float)-> None:
     """

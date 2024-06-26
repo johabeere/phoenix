@@ -90,9 +90,8 @@ def get_speed(n:int=1) -> float:
     print(f"Got speeds: {res}",h.LogLevel.DEBUG,"YELLOW")
     ##perform nan checks here already:
     clean_res = list((i for i in res if str(i)!='nan'))
-    print(f"{c.get_mm_per_px()}")
-    res_mm = list((i*c.get_mm_per_px() for i in clean_res)) 
-    print(f"converted speeds in mm/s: {res_mm=}", h.LogLevel.INFO, "CYAN")
+    res_mm = list((i*h.get_mm_per_px() for i in clean_res)) 
+    print(f"converted speeds in mm/s: {res_mm=}", h.LogLevel.DEBUG, "CYAN")
     return sum(res_mm)/n #changed to accout for nan values.
 
 def calibrate():
@@ -182,7 +181,7 @@ def calibrate():
     print(f"flattened list: {K}")
     h.overwrite_yaml_attribute(3, f"\tK: {K} #This needs to be in line 4, too lazy to dynamically check where attribute is stored.\n")
 
-def get_height(f:h.Fire, angle:float)-> float: 
+def get_height(f:Fire, angle:float)-> float: 
     """
     get height via computervision and trigonometry.
     Arguments: 
@@ -195,19 +194,21 @@ def get_height(f:h.Fire, angle:float)-> float:
     #if not -45<angle<45: 
     #    print(f"Angle for height calculation is out of bounds, please check input: {angle=}", h.LogLevel.ERROR)
     #    return 2000.0
+    angle = 0.0
     ###Idea: get apriltag size. relate image size to physical april tag size. by that, we can estimate 
-    c = np.array(f.corners)    
+    corn = np.array(f.corners)    
     #Transform coordinates to be orthagonal to camera viewcone: 
     r = R.from_euler('y', angle, degrees=True)
-    c_transformed = np.dot(c, r) # Transform into new CS
+    corn_transformed = r.apply(corn) # Transform into new CS
     ##calculate tag area by using shoelace formula in transformed coordinates: 
-    A = h.shoelace_formula(f.corners)
+    A = h.shoelace_formula(corn_transformed)
+    A_old = h.shoelace_formula(f.corners)
+    print(f"{A=}, {A_old=}")
     #height = (tag_size_mm*focal_length_mm)/(no_distortion_side_lengths_px * pixel_width)
-    height_in_mm = (h.parameters['Vision']['tag_size']*h.parameters['Camera']['physical'][0])/(np.sqrt(A)*c.get_mm_per_px())
+    height_in_mm = (h.parameters['Vision']['tag_size']*h.parameters['Camera']['physical'][0])/(np.sqrt(A)*h.get_mm_per_px())
     #TODO: calculate height by physical to pixel area relation. 
-    print(f"Height would be\t{height_in_mm=}, or in m:\t{height_in_mm/1000}, returning 2000.0")
-    return 2000.0 #! TODO replace with below
-    #return height_in_mm
+    print(f"Height would be\t{height_in_mm=}, or in m:\t{height_in_mm/1000}")
+    return height_in_mm
 
 #* end of OpenCV Code, leave this allone for now..
 

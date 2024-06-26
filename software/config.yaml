@@ -4,8 +4,8 @@ Vision:
   K: [1033.9140334285826, 0.0, 217.49962599879515, 0.0, 1027.3720125081963, 221.8851424617444, 0.0, 0.0, 1.0] #This needs to be in line 4, too lazy to dynamically check where attribute is stored.
   tag_to_search_for: 42 
   center: [0, 0]
-  centerborders: [0.8, 0.8] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
-  target_threshold: 0.1 ##percentage of x resolution the camera considers "close enough" to drop. (0.1 = 10% of x image size. )
+  centerborders: [0.5, 0.5] # img percentages to consider 'centered'. if apriltag center is inside here, drop will commence. 
+  target_threshold: 0.15 ##percentage of x resolution the camera considers "close enough" to drop. (0.1 = 10% of x image size. )
   
 Camera:
   calibrated: False
@@ -16,18 +16,18 @@ Camera:
   libcameraloglevel: "3" #not working right now :( #"0" - DEBUG, "1" - INFO, "2" - WARN, "3" - ERROR, "4" - FATAL
   focal_length_pixels: 1000  # Example value, adjust based on your camera calibration
   frame_rate: 30.0  # Frame rate of the video in frames per second
-  physical: [4.74, 6.45, 3.63 , 860, 460] #Array to define the cameras physical attributes. Preset for the Raspberry Pi Camera Module v3. Order is: [Focal length in mm, sensorsizex, sensorsizey, image size x, image size y]
+  physical: [4.74, 6.45, 3.63] #Array to define the cameras physical attributes. Preset for the Raspberry Pi Camera Module v3. Order is: [Focal length in mm, sensorsizex, sensorsizey]
 Helper: 
   logcolor: "CYAN"
   test: "Test"
 Main:
   logcolor: "CYAN"
   fire_polling: 1
-  afterrun_time: 10
+  afterrun_time: 5
   coolmode: True
   polling_timer: 0.2
 Hardware:
-  logcolor: "CYAN"
+  logcolor: "RED"
   camera_downtilt: 30.0
   camservo_angles: [10, 80]
   accellwaitpolling: 0.2 #time to poll for accell change during takeoff---
