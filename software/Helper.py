@@ -31,7 +31,7 @@ class LogLevel(Enum):
         return self.value
     def __str__(self): 
         return self.name
-    
+
 def get_params():
     with open( './config.yaml', 'r') as stream:
         p= yaml.safe_load(stream)

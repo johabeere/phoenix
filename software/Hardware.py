@@ -55,20 +55,22 @@ def hw_init()-> None:
     S1.start(0)
     S2.start(0)
     set_camera_angle(h.parameters['Hardware']['camera_downtilt'])
-#TODO fix lgpio exit erros. 
-def hw_cleanup(): 
-    try: 
-        #stop PWM interfaces. 
-        R.stop()  #! causes an uncaught exception in the lgpio module!
-        G.stop()  #! causes an uncaught exception in the lgpio module!
-        B.stop()  #! causes an uncaught exception in the lgpio module!
-        S1.stop()  #! causes an uncaught exception in the lgpio module!
-        S2.stop()  #! causes an uncaught exception in the lgpio module!
-        #cleanup pins. 
-        GPIO.cleanup() 
-    except TypeError: 
-        #catches the known error in lgpio.py line 1084 unsupported operand type(s) for &: 'NoneType' and 'int'
-        pass
+
+def hw_cleanup():  
+    #stop PWM interfaces. 
+    # see https://github.com/waveform80/rpi-lgpio/issues/15
+    global R, G, B, S1, S2
+    R.stop()
+    G.stop()
+    B.stop()
+    S1.stop()
+    S2.stop()
+    time.sleep(1)
+    del R, G, B, S1, S2
+    #cleanup pins. 
+    time.sleep(1)
+    GPIO.cleanup() 
+
 def wait_for_takeoff():
     print("Waiting for Takeoff...", h.LogLevel.INFO)
     acc = gyro.read_accl()['z']
@@ -176,5 +178,4 @@ if __name__ == "__main__":
     hw_cleanup()
 else: 
     hw_init()
-    pass
     #module setup

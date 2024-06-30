@@ -9,6 +9,7 @@ try:
 except IndexError: 
     print("Please connect a Camera!", h.LogLevel.FAILURE, "RED")
     exit()
+
 frame_rate = h.parameters['Camera']['frame_rate']
 ##set camera res mode
 mode = picam2.sensor_modes[h.parameters['Camera']['sensor_mode']]

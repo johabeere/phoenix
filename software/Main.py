@@ -36,6 +36,7 @@ greetstring = "\n\
 "
 
 stop_flag = threading.Event()
+exit_flag = threading.Event()
 
 def main(): 
     #set the killswitch. 
@@ -53,7 +54,7 @@ def main():
     ##Load water
     hw.acquire_payload()
     ##in-air loop: 
-    while True: 
+    while not exit_flag.is_set():# This is a while True loop adjusted to allow restart functionality. It exits either because the restart button is pressed or if a fire was found to be extinguished.  
         f = find_fire()
         if f!=None and v.is_in_center(f): 
             hw.set_LED(0xD02090)#magenta
@@ -71,7 +72,8 @@ def main():
     extinguish(d, f)
     hw.done()
     time.sleep(h.parameters['Main']['afterrun_time'])
-    clean_exit()
+    print("made it to EoP, shutting down gracefully..", h.LogLevel.INFO)
+    return
 
 def polling(d:Drone, f:Fire)-> None: 
     while not stop_flag.is_set():
@@ -139,24 +141,36 @@ def extinguish(d:Drone, f:Fire) -> None:
     return
 
 def restart_exit(channel): 
+    """
+    Called by the GPIO event of the reset button. sets the flags to stop polling (subthread) and main (main thread). 
+    """
     print("restart exit call...", h.LogLevel.FAILURE)
-    c.camera_cleanup()
-    hw.hw_cleanup()
-    exit(3)
+    hw.set_LED(0xFF0000)
+    exit_flag.set()
+    stop_flag.set()
 
-def clean_exit(): 
-    print("made it to EoP, shutting down gracefully..", h.LogLevel.INFO)
+def cleanup(): 
+    """
+    Cleanup function that calls all cleanups of submodules and stops the polling thread. time.sleep is needed to stop errors in GPIO Cleanup. 
+    """
     stop_polling()
+    time.sleep(1)
     c.camera_cleanup()
     hw.hw_cleanup()
-    exit()
+
 
 if __name__ == "__main__":
+    """
+    Program entry and exit point. 
+    try except catches Keyboard interrupts, main function monitors exit_flag to enable restart functionality.
+    exits based on program state to either restart (3) or shut down (0). 
+    """
     try: 
-        main()
-    except KeyboardInterrupt: 
+        while not exit_flag.is_set():
+            main()
+    except KeyboardInterrupt as e: 
         print("cleaning up and exiting....", h.LogLevel.INFO)
-        stop_polling()
-        c.camera_cleanup()
-        hw.hw_cleanup()
-        exit()  
+    finally:    
+        cleanup()
+        exit_code = 3 if exit_flag.is_set() else 0
+        exit(exit_code)

@@ -1,6 +1,6 @@
 Vision: 
   logcolor: "CYAN"
-  tag_size: 65 #input in mm
+  tag_size: 165 #input in mm
   K: [1033.9140334285826, 0.0, 217.49962599879515, 0.0, 1027.3720125081963, 221.8851424617444, 0.0, 0.0, 1.0] #This needs to be in line 4, too lazy to dynamically check where attribute is stored.
   tag_to_search_for: 42 
   center: [0, 0]
