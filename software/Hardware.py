@@ -109,6 +109,7 @@ def drop(d:h.Drone) -> None:
 def set_mounting() -> None: 
     set_servo_percent(h.parameters['Hardware']['drop_servo'], h.parameters['Hardware']['mounting_position'])
     return
+
 def done()-> None:
     """
     set LED to symbol done.

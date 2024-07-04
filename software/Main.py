@@ -45,7 +45,7 @@ def main():
     f:Fire = None
     d:Drone = Drone()
     #greet user. 
-    hw.set_LED(0xFFFFFF)#SET WHITE
+    hw.set_LED(0x00FF7E)#CYAN
     if h.parameters['Main']['coolmode']:
         print(greetstring, h.LogLevel.INFO, "RED")
     else: 

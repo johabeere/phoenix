@@ -242,10 +242,5 @@ if __name__=="__main__":
         vision_cleanup()
         exit()
 else: 
-    try: 
-        ##Module startup code here. 
-        setup()  
-    except KeyboardInterrupt: 
-        print("goodbye, cleaning up before I leave...")
-        vision_cleanup()
-        exit()
+    ##Module startup code here. 
+    setup()
