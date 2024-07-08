@@ -19,7 +19,6 @@ Camera:
   physical: [4.74, 6.45, 3.63] #Array to define the cameras physical attributes. Preset for the Raspberry Pi Camera Module v3. Order is: [Focal length in mm, sensorsizex, sensorsizey]
 Helper: 
   logcolor: "CYAN"
-  test: "Test"
 Main:
   logcolor: "CYAN"
   fire_polling: 1
