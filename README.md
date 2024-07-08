@@ -25,6 +25,8 @@ This project is meant to run on Raspbian, a light-weight Debian Distribution.
 You can run the application by calling the `start.sh` script located under `software/`:   
 `$ cd software && ./start.sh`
 
+Should you want to adjust program settings or used GPIO pins, look into ``config.yaml`` and ``pins.yaml``.
+
 For more information, see the respective subsections: 
 * [Software](./software/SOFTWARE.md) 
 * [Electronics](/electronics/ELECTRONICS.md)
@@ -51,4 +53,4 @@ The following students contributed to this project:
 ## Disclamer and License
 This is a one-time project and will lose support once it is completed. It is by no means perfect, so if you decide to replicate or use part of this project, you do so on your own risk.   
 That being said, we do encourage you to reuse anything that seems usefull.   
-This project is licensed under the **---INSERT LICENSE HERE---** License, for details, see <a href=https://google.com>here</a>
+This project is licensed under the **MIT License**, for details, see <a href=https://mit-license.org/>here</a>.
